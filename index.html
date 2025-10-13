@@ -231,7 +231,7 @@
             }
         }
         
-        async function handleFormSubmit(event) {
+        function handleFormSubmit(event) {
             event.preventDefault(); 
             
             const entryType = document.querySelector('input[name="entry-type"]:checked').value;
@@ -258,39 +258,41 @@
 
             setFormLoading(true);
 
-            try {
-                // We use no-cors mode, so we don't get a response back, but the action is performed.
-                await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', 
-                    cache: 'no-cache',
-                    redirect: 'follow',
-                    body: JSON.stringify(payload)
-                });
-                
-                showFormStatus('Transaksi berhasil disimpan! Memuat ulang data...', 'success');
-                addEntryForm.reset();
-                entryDateInput.valueAsDate = new Date();
-                otherCategoryInput.classList.add('hidden');
-                
-                setTimeout(() => {
-                    fetchData();
-                    showFormStatus('', 'success');
-                }, 2000); // Wait 2 seconds for the sheet to update
-
-            } catch (error) {
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showFormStatus('Transaksi berhasil disimpan! Memuat ulang data...', 'success');
+                    addEntryForm.reset();
+                    entryDateInput.valueAsDate = new Date();
+                    otherCategoryInput.classList.add('hidden');
+                    
+                    setTimeout(() => { // Give sheet a moment to process the new row
+                        fetchData();
+                        showFormStatus('', 'success');
+                    }, 1500); 
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
                 console.error('Error saat mengirim data:', error);
-                showFormStatus('Gagal mengirim data. Periksa konsol.', 'error');
-            } finally {
+                showFormStatus(`Gagal: ${error.message}`, 'error');
+            })
+            .finally(() => {
                 setFormLoading(false);
-            }
+            });
         }
         
-        async function handleConfirmDelete() {
+        function handleConfirmDelete() {
             if (!itemToDelete) return;
 
-            closeDeleteModal();
-            setLoadingState(true);
+            const originalButtonText = confirmDeleteBtn.innerHTML;
+            confirmDeleteBtn.disabled = true;
+            confirmDeleteBtn.innerHTML = `<div class="loader mx-auto"></div>`;
 
             const sheetName = itemToDelete.type === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME;
 
@@ -302,23 +304,26 @@
                 amountVND: itemToDelete.amountVND
             };
             
-            try {
-                await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    cache: 'no-cache',
-                    redirect: 'follow',
-                    body: JSON.stringify(payload)
-                });
-                
-                // Since we can't be 100% sure without a response, we show a generic message and refresh.
-                setTimeout(() => {
-                    fetchData();
-                }, 2000); // Wait 2 seconds for sheet update
-
-            } catch (error) {
-                showError(`Gagal menghapus data: ${error.message}`);
-            }
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    closeDeleteModal();
+                    setTimeout(() => fetchData(), 1500); // Wait for sheet to update
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
+                alert(`Gagal menghapus: ${error.message}`);
+            })
+            .finally(() => {
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.innerHTML = originalButtonText;
+            });
         }
 
 
