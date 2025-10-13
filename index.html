@@ -22,7 +22,8 @@
 </head>
 <body class="bg-slate-900 min-h-screen p-2 sm:p-4 text-slate-300">
 
-    <div class="bg-slate-800 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-6xl mx-auto border border-slate-700">
+    <!-- Konten utama aplikasi, disembunyikan secara default -->
+    <div id="main-content" class="hidden bg-slate-800 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-6xl mx-auto border border-slate-700">
 
         <div class="text-center mb-8">
             <h1 class="text-2xl sm:text-3xl font-bold text-slate-100">Aplikasi Catatan Keuangan</h1>
@@ -138,6 +139,22 @@
         </div>
     </div>
 
+    <!-- START: PIN Modal -->
+    <div id="pin-modal" class="hidden fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-sm border border-slate-700 text-center">
+            <h2 class="text-2xl font-bold text-slate-100 mb-4">Akses Terbatas</h2>
+            <p class="text-slate-400 mb-6">Silakan masukkan PIN Anda untuk melanjutkan.</p>
+            <form id="pin-form">
+                <input type="password" id="pin-input" class="w-full text-center text-2xl tracking-[.5em] px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" maxlength="4" required autocomplete="off">
+                <p id="pin-error" class="text-red-400 text-sm mt-2 min-h-[20px]"></p>
+                <button type="submit" class="w-full mt-6 bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-blue-500">
+                    Masuk
+                </button>
+            </form>
+        </div>
+    </div>
+    <!-- END: PIN Modal -->
+
     <!-- START: Delete Confirmation Modal -->
     <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-slate-700 rounded-lg shadow-xl p-6 w-full max-w-sm border border-slate-600">
@@ -157,6 +174,7 @@
 
     <script>
         // --- KONFIGURASI PENTING ---
+        const CORRECT_PIN = "1907"; // GANTI DENGAN 4 DIGIT PIN ANDA
         const SPREADSHEET_ID = "1h7ZBahOOhbB7ZdNUduGgIw6h6N8h7G2a8q7EpEjR8i0";
         const API_KEY = "AIzaSyCNMaR1CCsaGQbcSDzjsTeTCtdc42l35tc";
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvXIIjJj18GT-GCddSqAahoCzyf8jpUrDkDoBYSJaMGwaiPizk4jvqQxjqkXB2SDf44A/exec";
@@ -168,6 +186,11 @@
         // --- AKHIR DARI BAGIAN KONFIGURASI ---
 
         // --- ELEMEN DOM ---
+        const mainContent = document.getElementById('main-content');
+        const pinModal = document.getElementById('pin-modal');
+        const pinForm = document.getElementById('pin-form');
+        const pinInput = document.getElementById('pin-input');
+        const pinError = document.getElementById('pin-error');
         const summaryIncomeEl = document.getElementById('summary-income');
         const summaryExpenseVndEl = document.getElementById('summary-expense-vnd');
         const summaryBalanceVndEl = document.getElementById('summary-balance-vnd');
@@ -192,6 +215,24 @@
         let itemToDelete = null;
         
         entryDateInput.valueAsDate = new Date();
+
+        function showApp() {
+            pinModal.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+            fetchData();
+        }
+
+        function handlePinSubmit(event) {
+            event.preventDefault();
+            if (pinInput.value === CORRECT_PIN) {
+                sessionStorage.setItem('isAuthenticated', 'true');
+                showApp();
+            } else {
+                pinError.textContent = "PIN salah. Silakan coba lagi.";
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        }
 
         async function fetchData() {
             if (SPREADSHEET_ID === "MASUKKAN_ID_SPREADSHEET_ANDA_DI_SINI" || API_KEY === "MASUKKAN_API_KEY_ANDA_DI_SINI") {
@@ -482,8 +523,18 @@
         }
 
         // --- EVENT LISTENERS ---
-        document.addEventListener('DOMContentLoaded', fetchData);
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('isAuthenticated') === 'true') {
+                showApp();
+            } else {
+                pinModal.classList.remove('hidden');
+            }
+        });
+
+        pinForm.addEventListener('submit', handlePinSubmit);
+        
         addEntryForm.addEventListener('submit', handleFormSubmit);
+        
         categorySelect.addEventListener('change', () => {
             if (categorySelect.value === 'Other') {
                 otherCategoryInput.classList.remove('hidden');
@@ -492,6 +543,7 @@
                 otherCategoryInput.classList.add('hidden');
             }
         });
+
         tableBody.addEventListener('click', (event) => {
             const deleteButton = event.target.closest('.delete-btn');
             if (deleteButton) {
@@ -499,6 +551,7 @@
                 openDeleteModal(item);
             }
         });
+
         cancelDeleteBtn.addEventListener('click', closeDeleteModal);
         confirmDeleteBtn.addEventListener('click', handleConfirmDelete);
 
