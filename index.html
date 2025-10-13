@@ -64,6 +64,7 @@
                            <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50"><h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Saldo Akhir (IDR)</h3><p id="summary-balance-idr" class="text-xl sm:text-2xl font-bold text-blue-400 mt-2">-</p></div>
                            <div class="bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider">Total Pengeluaran (IDR)</h3><p id="summary-expense-idr" class="text-xl sm:text-2xl font-bold text-red-400 mt-2">-</p></div>
                            <div class="bg-slate-700/50 p-4 rounded-lg border border-purple-500/50"><h3 class="text-xs sm:text-sm font-medium text-purple-300 uppercase tracking-wider">Jumlah Hari</h3><p id="summary-days" class="text-xl sm:text-2xl font-bold text-purple-400 mt-2">-</p></div>
+                           <div class="bg-slate-700/50 p-4 rounded-lg border border-amber-500/50"><h3 class="text-xs sm:text-sm font-medium text-amber-300 uppercase tracking-wider">Kurs (VND to IDR)</h3><p id="summary-rate" class="text-xl sm:text-2xl font-bold text-amber-400 mt-2">-</p></div>
                         </div>
                     </div>
                     <div class="bg-slate-700/50 p-4 sm:p-6 rounded-lg border border-slate-700">
@@ -414,7 +415,7 @@
             summaryBalanceIdrEl.className = `text-xl sm:text-2xl font-bold mt-2 ${finalBalanceIDR >= 0 ? 'text-blue-400' : 'text-red-400'}`;
             summaryExpenseIdrEl.textContent = formatCurrency(totalExpenseIDR, 'IDR');
             summaryDaysEl.textContent = dayCount;
-            // summaryRateEl.textContent = exchangeRate.toFixed(4);
+            summaryRateEl.textContent = exchangeRate.toFixed(4); // PERBAIKAN DI SINI
 
              tableFoot.innerHTML = `
                 <tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Pemasukan (VND)</td><td class="px-6 py-3 text-right text-sm text-green-400">${formatCurrency(totalIncomeVND, 'VND')}</td><td colspan="2"></td></tr>
