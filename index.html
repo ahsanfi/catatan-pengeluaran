@@ -148,7 +148,20 @@
                         <div class="md:col-span-2"><label for="entry-description" class="block text-sm font-medium text-slate-300 mb-1">Description</label><input type="text" id="entry-description" placeholder="Example: Lunch at the office" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 placeholder-slate-500" required></div>
                         <div><label for="entry-date" class="block text-sm font-medium text-slate-300 mb-1">Date</label><input type="date" id="entry-date" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200" required></div>
                         <div><label for="entry-amount" class="block text-sm font-medium text-slate-300 mb-1">Amount (VND)</label><input type="number" id="entry-amount" placeholder="50000" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 placeholder-slate-500" required></div>
-                        <div><label for="entry-category" class="block text-sm font-medium text-slate-300 mb-1">Category</label><select id="entry-category" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200"><option>Food & Drink</option><option>Transportation</option><option>Groceries</option><option>Shopping</option><option>Communication</option><option>Miscellaneous</option><option value="Other">Other...</option></select><input type="text" id="other-category-input" placeholder="New category" class="hidden w-full mt-2 px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500"></div>
+                        <div>
+                            <label for="entry-category" class="block text-sm font-medium text-slate-300 mb-1">Category</label>
+                            <select id="entry-category" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200">
+                                <option>Income</option>
+                                <option>Food & Drink</option>
+                                <option>Transportation</option>
+                                <option>Groceries</option>
+                                <option>Shopping</option>
+                                <option>Communication</option>
+                                <option>Miscellaneous</option>
+                                <option value="Other">Other...</option>
+                            </select>
+                            <input type="text" id="other-category-input" placeholder="New category" class="hidden w-full mt-2 px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500">
+                        </div>
                         <div><label class="block text-sm font-medium text-slate-300 mb-2">Transaction Type</label><div class="flex gap-4 mt-1"><label class="flex items-center"><input type="radio" name="entry-type" value="expense" class="h-4 w-4 bg-slate-700 border-slate-600" checked> <span class="ml-2 text-sm">Expense</span></label><label class="flex items-center"><input type="radio" name="entry-type" value="income" class="h-4 w-4 bg-slate-700 border-slate-600"> <span class="ml-2 text-sm">Income</span></label></div></div>
                         <div class="md:col-span-2"><button type="submit" id="submit-entry-button" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 transition">Save Transaction</button></div>
                     </form>
@@ -531,7 +544,16 @@
         pinForm.addEventListener('submit', handlePinSubmit);
         logoutBtn.addEventListener('click', () => { sessionStorage.removeItem('isAuthenticated'); window.location.reload(); });
         addEntryForm.addEventListener('submit', handleFormSubmit);
-        categorySelect.addEventListener('change', () => { otherCategoryInput.classList.toggle('hidden', categorySelect.value !== 'Other'); });
+        categorySelect.addEventListener('change', () => { 
+            otherCategoryInput.classList.toggle('hidden', categorySelect.value !== 'Other');
+            const incomeRadio = document.querySelector('input[name="entry-type"][value="income"]');
+            const expenseRadio = document.querySelector('input[name="entry-type"][value="expense"]');
+            if (categorySelect.value === 'Income') {
+                incomeRadio.checked = true;
+            } else {
+                expenseRadio.checked = true;
+            }
+        });
         tableBody.addEventListener('click', (event) => { const deleteButton = event.target.closest('.delete-btn'); if (deleteButton) { openDeleteModal(JSON.parse(decodeURIComponent(deleteButton.dataset.item))); } });
         cancelDeleteBtn.addEventListener('click', closeDeleteModal);
         confirmDeleteBtn.addEventListener('click', handleConfirmDelete);
