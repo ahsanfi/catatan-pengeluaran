@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Catatan Keuangan Otomatis</title>
+    <title>Aplikasi Catatan Keuangan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,29 +58,6 @@
              <div id="form-status" class="text-center mt-4 min-h-[20px]"></div>
         </div>
         
-        <!-- Konfigurasi Tampilan Data -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 items-end p-4 bg-slate-50 rounded-lg">
-            <div class="lg:col-span-2">
-                <label for="spreadsheet-id" class="block text-sm font-medium text-slate-700 mb-1">ID Spreadsheet</label>
-                <input type="text" id="spreadsheet-id" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm" placeholder="Contoh: 1ABCdeFG2H...">
-            </div>
-            <div class="lg:col-span-2">
-                <label for="api-key" class="block text-sm font-medium text-slate-700 mb-1">API Key</label>
-                <input type="password" id="api-key" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm" placeholder="Kunci API untuk membaca data">
-            </div>
-             <div>
-                <label for="income-sheet-name" class="block text-sm font-medium text-slate-700 mb-1">Sheet Pemasukan</label>
-                <input type="text" id="income-sheet-name" value="Income" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm">
-            </div>
-             <div>
-                <label for="expense-sheet-name" class="block text-sm font-medium text-slate-700 mb-1">Sheet Pengeluaran</label>
-                <input type="text" id="expense-sheet-name" value="Expenses" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm">
-            </div>
-            <button id="fetch-button" class="w-full md:col-span-2 lg:col-span-1 bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">
-                Tampilkan Data
-            </button>
-        </div>
-        
         <!-- Tabel Data -->
         <div id="status-message" class="text-center min-h-[40px] flex items-center justify-center"></div>
         <div class="overflow-x-auto rounded-lg border border-slate-200">
@@ -106,52 +83,41 @@
 
     <script>
         // --- KONFIGURASI PENTING ---
-        // URL ini didapat dari hasil deploy Google Apps Script Anda.
-        // Ini sudah di-setting untuk Anda. Ganti jika Anda men-deploy script baru.
+        // GANTI BAGIAN INI DENGAN INFORMASI ANDA SEKALI SAJA
+        const SPREADSHEET_ID = "MASUKKAN_ID_SPREADSHEET_ANDA_DI_SINI";
+        const API_KEY = "MASUKKAN_API_KEY_ANDA_DI_SINI";
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvXIIjJj18GT-GCddSqAahoCzyf8jpUrDkDoBYSJaMGwaiPizk4jvqQxjqkXB2SDf44A/exec";
+        const INCOME_SHEET_NAME = "Income";
+        const EXPENSE_SHEET_NAME = "Expenses";
+        // --- AKHIR DARI BAGIAN KONFIGURASI ---
+
 
         // --- ELEMEN DOM ---
-        const fetchButton = document.getElementById('fetch-button');
-        const spreadsheetIdInput = document.getElementById('spreadsheet-id');
-        const apiKeyInput = document.getElementById('api-key');
-        const incomeSheetInput = document.getElementById('income-sheet-name');
-        const expenseSheetInput = document.getElementById('expense-sheet-name');
         const tableBody = document.getElementById('data-body');
         const tableFoot = document.getElementById('table-foot');
         const statusMessage = document.getElementById('status-message');
-        
-        // --- ELEMEN FORM INPUT ---
         const addEntryForm = document.getElementById('add-entry-form');
         const submitEntryButton = document.getElementById('submit-entry-button');
         const formStatus = document.getElementById('form-status');
         const entryDateInput = document.getElementById('entry-date');
         
-        // Set tanggal hari ini sebagai default
         entryDateInput.valueAsDate = new Date();
 
-        /**
-         * Mengambil data dari kedua sheet untuk ditampilkan.
-         */
         async function fetchData() {
-            const spreadsheetId = spreadsheetIdInput.value.trim();
-            const apiKey = apiKeyInput.value.trim();
-            const incomeSheet = incomeSheetInput.value.trim();
-            const expenseSheet = expenseSheetInput.value.trim();
-
-            if (!spreadsheetId || !apiKey) {
-                showError("Harap isi ID Spreadsheet dan API Key untuk menampilkan data.");
+            if (SPREADSHEET_ID === "MASUKKAN_ID_SPREADSHEET_ANDA_DI_SINI" || API_KEY === "MASUKKAN_API_KEY_ANDA_DI_SINI") {
+                showError("Harap masukkan ID Spreadsheet dan API Key Anda di dalam file index.html.");
                 return;
             }
             
             setLoadingState(true);
-            const incomeRange = `${incomeSheet}!A2:D`;
-            const expenseRange = `${expenseSheet}!A2:D`;
-            const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values`;
+            const incomeRange = `${INCOME_SHEET_NAME}!A2:D`;
+            const expenseRange = `${EXPENSE_SHEET_NAME}!A2:D`;
+            const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values`;
 
             try {
                 const [incomeRes, expenseRes] = await Promise.all([
-                    fetch(`${baseUrl}/${incomeRange}?key=${apiKey}`),
-                    fetch(`${baseUrl}/${expenseRange}?key=${apiKey}`)
+                    fetch(`${baseUrl}/${incomeRange}?key=${API_KEY}`),
+                    fetch(`${baseUrl}/${expenseRange}?key=${API_KEY}`)
                 ]);
 
                 const incomeJson = await incomeRes.json();
@@ -160,10 +126,6 @@
                 if (!incomeRes.ok) throw new Error(`Sheet Pemasukan: ${incomeJson.error.message}`);
                 if (!expenseRes.ok) throw new Error(`Sheet Pengeluaran: ${expenseJson.error.message}`);
                 
-                // Jika berhasil, simpan ke localStorage
-                localStorage.setItem('spreadsheetId', spreadsheetId);
-                localStorage.setItem('apiKey', apiKey);
-
                 renderData(incomeJson.values, expenseJson.values);
 
             } catch (error) {
@@ -173,15 +135,12 @@
             }
         }
         
-        /**
-         * Menangani submit formulir untuk menambah data baru.
-         */
         async function handleFormSubmit(event) {
             event.preventDefault(); 
             
             const entryType = document.querySelector('input[name="entry-type"]:checked').value;
             const amount = parseFloat(document.getElementById('entry-amount').value);
-            const sheetName = entryType === 'income' ? incomeSheetInput.value.trim() : expenseSheetInput.value.trim();
+            const sheetName = entryType === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME;
 
             const payload = {
                 sheetName: sheetName,
@@ -194,7 +153,7 @@
             setFormLoading(true);
 
             try {
-                const response = await fetch(WEB_APP_URL, {
+                await fetch(WEB_APP_URL, {
                     method: 'POST',
                     mode: 'no-cors', 
                     cache: 'no-cache',
@@ -276,22 +235,7 @@
                 </tr>
             `;
         }
-        
-        /**
-         * Memuat konfigurasi dari localStorage saat halaman dibuka.
-         */
-        function loadConfig() {
-            const savedId = localStorage.getItem('spreadsheetId');
-            const savedKey = localStorage.getItem('apiKey');
-            if (savedId) {
-                spreadsheetIdInput.value = savedId;
-            }
-            if (savedKey) {
-                apiKeyInput.value = savedKey;
-            }
-        }
 
-        // --- FUNGSI BANTUAN LAINNYA ---
         function setLoadingState(isLoading) {
              if (isLoading) {
                 statusMessage.innerHTML = `<div class="flex items-center gap-2"><div class="loader"></div><p class="text-slate-500">Memuat data...</p></div>`;
@@ -318,15 +262,14 @@
         function showError(message) {
             statusMessage.innerHTML = `<p class="text-red-500 font-medium text-center">${message}</p>`;
         }
-        function formatCurrency(value, currency = 'IDR') {
+        function formatCurrency(value, currency = 'VND') {
             const number = Number(value);
             if (isNaN(number)) return '-';
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(number);
         }
 
         // --- EVENT LISTENERS ---
-        document.addEventListener('DOMContentLoaded', loadConfig); // Panggil saat halaman selesai dimuat
-        fetchButton.addEventListener('click', () => fetchData());
+        document.addEventListener('DOMContentLoaded', fetchData);
         addEntryForm.addEventListener('submit', handleFormSubmit);
 
     </script>
