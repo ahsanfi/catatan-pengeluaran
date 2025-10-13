@@ -29,22 +29,37 @@
             <p class="text-slate-400 mt-2">Menampilkan & Menambah Data ke Google Spreadsheet Anda.</p>
         </div>
 
-        <!-- START: Bagian Ringkasan Saldo (Berdasarkan VND) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center">
-            <!-- Kartu Pemasukan -->
+        <!-- START: Bagian Ringkasan Saldo (Format 2x3) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 text-center">
+            <!-- Kartu Pemasukan (VND) -->
             <div class="bg-slate-700/50 p-6 rounded-lg border border-green-500/50">
                 <h3 class="text-sm font-medium text-green-300 uppercase tracking-wider">Total Pemasukan (VND)</h3>
                 <p id="summary-income" class="text-3xl font-bold text-green-400 mt-2">-</p>
             </div>
-            <!-- Kartu Pengeluaran -->
+            <!-- Kartu Pengeluaran (VND) -->
             <div class="bg-slate-700/50 p-6 rounded-lg border border-red-500/50">
                 <h3 class="text-sm font-medium text-red-300 uppercase tracking-wider">Total Pengeluaran (VND)</h3>
-                <p id="summary-expense" class="text-3xl font-bold text-red-400 mt-2">-</p>
+                <p id="summary-expense-vnd" class="text-3xl font-bold text-red-400 mt-2">-</p>
             </div>
-            <!-- Kartu Saldo Akhir -->
+            <!-- Kartu Saldo Akhir (VND) -->
             <div class="bg-slate-700/50 p-6 rounded-lg border border-blue-500/50">
                 <h3 class="text-sm font-medium text-blue-300 uppercase tracking-wider">Saldo Akhir (VND)</h3>
                 <p id="summary-balance" class="text-3xl font-bold text-blue-400 mt-2">-</p>
+            </div>
+            <!-- Kartu Total Pengeluaran (IDR) -->
+            <div class="bg-slate-700/50 p-6 rounded-lg border border-red-500/50">
+                <h3 class="text-sm font-medium text-red-300 uppercase tracking-wider">Total Pengeluaran (IDR)</h3>
+                <p id="summary-expense-idr" class="text-3xl font-bold text-red-400 mt-2">-</p>
+            </div>
+            <!-- Kartu Jumlah Hari -->
+            <div class="bg-slate-700/50 p-6 rounded-lg border border-purple-500/50">
+                <h3 class="text-sm font-medium text-purple-300 uppercase tracking-wider">Jumlah Hari</h3>
+                <p id="summary-days" class="text-3xl font-bold text-purple-400 mt-2">-</p>
+            </div>
+            <!-- Kartu Kurs -->
+            <div class="bg-slate-700/50 p-6 rounded-lg border border-amber-500/50">
+                <h3 class="text-sm font-medium text-amber-300 uppercase tracking-wider">Kurs (VND to IDR)</h3>
+                <p id="summary-rate" class="text-3xl font-bold text-amber-400 mt-2">-</p>
             </div>
         </div>
         <!-- END: Bagian Ringkasan Saldo -->
@@ -63,7 +78,16 @@
                 </div>
                 <div>
                     <label for="entry-category" class="block text-sm font-medium text-slate-300 mb-1">Kategori</label>
-                    <input type="text" id="entry-category" placeholder="Contoh: Food & Drink" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <select id="entry-category" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Food & Drink</option>
+                        <option>Transportation</option>
+                        <option>Groceries</option>
+                        <option>Shopping</option>
+                        <option>Communication</option>
+                        <option>Miscellaneous</option>
+                        <option value="Other">Lainnya...</option>
+                    </select>
+                    <input type="text" id="other-category-input" placeholder="Kategori baru" class="hidden w-full mt-2 px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
                     <label for="entry-amount" class="block text-sm font-medium text-slate-300 mb-1">Jumlah (VND)</label>
@@ -113,13 +137,18 @@
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvXIIjJj18GT-GCddSqAahoCzyf8jpUrDkDoBYSJaMGwaiPizk4jvqQxjqkXB2SDf44A/exec";
         const INCOME_SHEET_NAME = "Income";
         const EXPENSE_SHEET_NAME = "Expenses";
-        const DATA_RANGE = 'A2:E'; // Perluas jangkauan untuk menyertakan kolom IDR (E)
+        const SUMMARY_SHEET_NAME = "Summary";
+        const DATA_RANGE = 'A2:E'; // Jangkauan untuk data transaksi
+        const RATE_CELL = 'F1';    // Sel untuk kurs
         // --- AKHIR DARI BAGIAN KONFIGURASI ---
 
         // --- ELEMEN DOM ---
         const summaryIncomeEl = document.getElementById('summary-income');
-        const summaryExpenseEl = document.getElementById('summary-expense');
+        const summaryExpenseVndEl = document.getElementById('summary-expense-vnd');
         const summaryBalanceEl = document.getElementById('summary-balance');
+        const summaryExpenseIdrEl = document.getElementById('summary-expense-idr');
+        const summaryDaysEl = document.getElementById('summary-days');
+        const summaryRateEl = document.getElementById('summary-rate');
         const tableBody = document.getElementById('data-body');
         const tableFoot = document.getElementById('table-foot');
         const statusMessage = document.getElementById('status-message');
@@ -127,6 +156,8 @@
         const submitEntryButton = document.getElementById('submit-entry-button');
         const formStatus = document.getElementById('form-status');
         const entryDateInput = document.getElementById('entry-date');
+        const categorySelect = document.getElementById('entry-category');
+        const otherCategoryInput = document.getElementById('other-category-input');
         
         entryDateInput.valueAsDate = new Date();
 
@@ -139,21 +170,27 @@
             setLoadingState(true);
             const incomeRange = `${INCOME_SHEET_NAME}!${DATA_RANGE}`;
             const expenseRange = `${EXPENSE_SHEET_NAME}!${DATA_RANGE}`;
+            const rateRange = `${SUMMARY_SHEET_NAME}!${RATE_CELL}`;
             const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values`;
 
             try {
-                const [incomeRes, expenseRes] = await Promise.all([
+                const [incomeRes, expenseRes, rateRes] = await Promise.all([
                     fetch(`${baseUrl}/${incomeRange}?key=${API_KEY}`),
-                    fetch(`${baseUrl}/${expenseRange}?key=${API_KEY}`)
+                    fetch(`${baseUrl}/${expenseRange}?key=${API_KEY}`),
+                    fetch(`${baseUrl}/${rateRange}?key=${API_KEY}`)
                 ]);
 
                 const incomeJson = await incomeRes.json();
                 const expenseJson = await expenseRes.json();
+                const rateJson = await rateRes.json();
 
                 if (!incomeRes.ok) throw new Error(`Sheet Pemasukan: ${incomeJson.error.message}`);
                 if (!expenseRes.ok) throw new Error(`Sheet Pengeluaran: ${expenseJson.error.message}`);
+                if (!rateRes.ok) throw new Error(`Sheet Summary (Kurs): ${rateJson.error.message}`);
+
+                const exchangeRate = parseFloat(rateJson.values[0][0]) || 0;
                 
-                renderData(incomeJson.values, expenseJson.values);
+                renderData(incomeJson.values, expenseJson.values, exchangeRate);
 
             } catch (error) {
                 showError(error.message);
@@ -169,11 +206,20 @@
             const amount = parseFloat(document.getElementById('entry-amount').value);
             const sheetName = entryType === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME;
 
+            let category = categorySelect.value;
+            if (category === 'Other') {
+                category = otherCategoryInput.value.trim();
+                if (!category) {
+                    showFormStatus('Harap isi kategori baru.', 'error');
+                    return;
+                }
+            }
+
             const payload = {
                 sheetName: sheetName,
                 date: document.getElementById('entry-date').value,
                 description: document.getElementById('entry-description').value,
-                category: document.getElementById('entry-category').value,
+                category: category,
                 amount: entryType === 'expense' ? -Math.abs(amount) : Math.abs(amount)
             };
 
@@ -191,6 +237,7 @@
                 showFormStatus('Transaksi berhasil disimpan! Memuat ulang data...', 'success');
                 addEntryForm.reset();
                 entryDateInput.valueAsDate = new Date();
+                otherCategoryInput.classList.add('hidden'); // Sembunyikan lagi setelah submit
                 
                 setTimeout(() => {
                     fetchData();
@@ -205,33 +252,36 @@
             }
         }
 
-        function renderData(incomeRows, expenseRows) {
+        function renderData(incomeRows, expenseRows, exchangeRate) {
             let combinedData = [];
             let totalIncomeVND = 0;
             let totalExpenseVND = 0;
+            let totalExpenseIDR = 0;
+            let allDates = [];
 
             if (incomeRows) {
                 incomeRows.forEach(row => {
+                    if(!row[0]) return; // Lewati jika tidak ada tanggal
+                    allDates.push(new Date(row[0]));
                     const amountVNDString = (row[3] || '0').replace(/,/g, '');
                     const amountIDRString = (row[4] || '0').replace(/,/g, '');
                     const amountVND = parseFloat(amountVNDString);
                     const amountIDR = parseFloat(amountIDRString);
-                    if(row[0]) {
-                        combinedData.push({ type: 'income', date: row[0], description: row[1], category: row[2], amountVND, amountIDR });
-                        totalIncomeVND += amountVND;
-                    }
+                    combinedData.push({ type: 'income', date: row[0], description: row[1], category: row[2], amountVND, amountIDR });
+                    totalIncomeVND += amountVND;
                 });
             }
             if (expenseRows) {
                 expenseRows.forEach(row => {
+                    if(!row[0]) return; // Lewati jika tidak ada tanggal
+                    allDates.push(new Date(row[0]));
                     const amountVNDString = (row[3] || '0').replace(/,/g, '');
                     const amountIDRString = (row[4] || '0').replace(/,/g, '');
                     const amountVND = parseFloat(amountVNDString);
                     const amountIDR = parseFloat(amountIDRString);
-                     if(row[0]) {
-                        combinedData.push({ type: 'expense', date: row[0], description: row[1], category: row[2], amountVND: Math.abs(amountVND), amountIDR: Math.abs(amountIDR) });
-                        totalExpenseVND += Math.abs(amountVND);
-                    }
+                    combinedData.push({ type: 'expense', date: row[0], description: row[1], category: row[2], amountVND: Math.abs(amountVND), amountIDR: Math.abs(amountIDR) });
+                    totalExpenseVND += Math.abs(amountVND);
+                    totalExpenseIDR += Math.abs(amountIDR);
                 });
             }
             combinedData.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -255,15 +305,27 @@
                 });
             }
 
+            // --- Kalkulasi Baru ---
             const finalBalanceVND = totalIncomeVND - totalExpenseVND;
+            const totalConvertedExpenseIDR = (totalExpenseVND * exchangeRate) + totalExpenseIDR;
+            let dayCount = 0;
+            if (allDates.length > 0) {
+                const minDate = new Date(Math.min.apply(null, allDates));
+                const maxDate = new Date(Math.max.apply(null, allDates));
+                const timeDiff = Math.abs(maxDate.getTime() - minDate.getTime());
+                dayCount = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+            }
             
-            // Perbarui kartu ringkasan di atas (hanya berdasarkan VND)
+            // --- Perbarui Kartu Ringkasan ---
             summaryIncomeEl.textContent = formatCurrency(totalIncomeVND, 'VND');
-            summaryExpenseEl.textContent = formatCurrency(totalExpenseVND, 'VND');
+            summaryExpenseVndEl.textContent = formatCurrency(totalExpenseVND, 'VND');
             summaryBalanceEl.textContent = formatCurrency(finalBalanceVND, 'VND');
             summaryBalanceEl.className = `text-3xl font-bold mt-2 ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}`;
+            summaryExpenseIdrEl.textContent = formatCurrency(totalConvertedExpenseIDR, 'IDR');
+            summaryDaysEl.textContent = dayCount;
+            summaryRateEl.textContent = exchangeRate.toFixed(4);
 
-            // Perbarui footer tabel
+            // --- Perbarui Footer Tabel ---
             tableFoot.innerHTML = `
                 <tr>
                     <td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Pemasukan (VND)</td>
@@ -286,9 +348,8 @@
         function setLoadingState(isLoading) {
              if (isLoading) {
                 statusMessage.innerHTML = `<div class="flex items-center gap-2"><div class="loader"></div><p class="text-slate-400">Memuat data...</p></div>`;
-                summaryIncomeEl.textContent = '-';
-                summaryExpenseEl.textContent = '-';
-                summaryBalanceEl.textContent = '-';
+                const summaries = [summaryIncomeEl, summaryExpenseVndEl, summaryBalanceEl, summaryExpenseIdrEl, summaryDaysEl, summaryRateEl];
+                summaries.forEach(el => el.textContent = '-');
                 tableBody.innerHTML = '';
                 tableFoot.innerHTML = '';
             } else {
@@ -322,6 +383,14 @@
         // --- EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', fetchData);
         addEntryForm.addEventListener('submit', handleFormSubmit);
+        categorySelect.addEventListener('change', () => {
+            if (categorySelect.value === 'Other') {
+                otherCategoryInput.classList.remove('hidden');
+                otherCategoryInput.focus();
+            } else {
+                otherCategoryInput.classList.add('hidden');
+            }
+        });
 
     </script>
 </body>
