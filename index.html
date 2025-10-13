@@ -84,9 +84,21 @@
     <script>
         // --- KONFIGURASI PENTING ---
         // GANTI BAGIAN INI DENGAN INFORMASI ANDA SEKALI SAJA
-        const SPREADSHEET_ID = "MASUKKAN_ID_SPREADSHEET_ANDA_DI_SINI";
-        const API_KEY = "MASUKKAN_API_KEY_ANDA_DI_SINI";
+        
+        // Cara mendapatkan SPREADSHEET_ID: Buka Google Sheet Anda, lihat URL di browser.
+        // ID-nya adalah teks panjang di antara ".../d/" dan "/edit".
+        // Contoh URL: https://docs.google.com/spreadsheets/d/INI_ADALAH_ID_NYA/edit
+        const SPREADSHEET_ID = "1h7ZBahOOhbB7ZdNUduGgIw6h6N8h7G2a8q7EpEjR8i0";
+
+        // Cara mendapatkan API_KEY: Buka Google Cloud Console, cari proyek Anda,
+        // buka menu "APIs & Services" > "Credentials". Buat atau salin API Key Anda.
+        // Pastikan Google Sheets API sudah diaktifkan untuk key tersebut.
+        const API_KEY = "AIzaSyCNMaR1CCsaGQbcSDzjsTeTCtdc42l35tc";
+        
+        // URL ini didapat dari hasil deploy Google Apps Script Anda.
+        // URL yang Anda berikan sudah benar dan sudah saya masukkan.
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwvXIIjJj18GT-GCddSqAahoCzyf8jpUrDkDoBYSJaMGwaiPizk4jvqQxjqkXB2SDf44A/exec";
+        
         const INCOME_SHEET_NAME = "Income";
         const EXPENSE_SHEET_NAME = "Expenses";
         // --- AKHIR DARI BAGIAN KONFIGURASI ---
