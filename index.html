@@ -30,7 +30,7 @@
         </div>
 
         <!-- START: Bagian Ringkasan Saldo -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 text-center">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 text-center">
             <!-- Kartu Pemasukan (VND) -->
             <div class="bg-slate-700/50 p-6 rounded-lg border border-green-500/50">
                 <h3 class="text-sm font-medium text-green-300 uppercase tracking-wider">Total Pemasukan (VND)</h3>
@@ -46,15 +46,10 @@
                 <h3 class="text-sm font-medium text-blue-300 uppercase tracking-wider">Saldo Akhir (VND)</h3>
                 <p id="summary-balance" class="text-3xl font-bold text-blue-400 mt-2">-</p>
             </div>
-             <!-- Kartu Jumlah Pengeluaran (IDR) -->
+            <!-- Kartu Total Pengeluaran (IDR) -->
             <div class="bg-slate-700/50 p-6 rounded-lg border border-red-500/50">
-                <h3 class="text-sm font-medium text-red-300 uppercase tracking-wider">Jml. Pengeluaran (IDR)</h3>
-                <p id="summary-expense-idr-raw" class="text-3xl font-bold text-red-400 mt-2">-</p>
-            </div>
-            <!-- Kartu Total Pengeluaran (Konversi IDR) -->
-            <div class="lg:col-span-2 bg-slate-700/50 p-6 rounded-lg border border-red-500/50">
-                <h3 class="text-sm font-medium text-red-300 uppercase tracking-wider">Total Pengeluaran (Konversi IDR)</h3>
-                <p id="summary-expense-idr-converted" class="text-3xl font-bold text-red-400 mt-2">-</p>
+                <h3 class="text-sm font-medium text-red-300 uppercase tracking-wider">Total Pengeluaran (IDR)</h3>
+                <p id="summary-expense-idr" class="text-3xl font-bold text-red-400 mt-2">-</p>
             </div>
             <!-- Kartu Jumlah Hari -->
             <div class="bg-slate-700/50 p-6 rounded-lg border border-purple-500/50">
@@ -151,8 +146,7 @@
         const summaryIncomeEl = document.getElementById('summary-income');
         const summaryExpenseVndEl = document.getElementById('summary-expense-vnd');
         const summaryBalanceEl = document.getElementById('summary-balance');
-        const summaryExpenseIdrRawEl = document.getElementById('summary-expense-idr-raw');
-        const summaryExpenseIdrConvertedEl = document.getElementById('summary-expense-idr-converted');
+        const summaryExpenseIdrEl = document.getElementById('summary-expense-idr');
         const summaryDaysEl = document.getElementById('summary-days');
         const summaryRateEl = document.getElementById('summary-rate');
         const tableBody = document.getElementById('data-body');
@@ -313,7 +307,6 @@
 
             // --- Kalkulasi Baru ---
             const finalBalanceVND = totalIncomeVND - totalExpenseVND;
-            const totalConvertedExpenseIDR = (totalExpenseVND * exchangeRate) + totalExpenseIDR;
             let dayCount = 0;
             if (allDates.length > 0) {
                 const minDate = new Date(Math.min.apply(null, allDates));
@@ -327,8 +320,7 @@
             summaryExpenseVndEl.textContent = formatCurrency(totalExpenseVND, 'VND');
             summaryBalanceEl.textContent = formatCurrency(finalBalanceVND, 'VND');
             summaryBalanceEl.className = `text-3xl font-bold mt-2 ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}`;
-            summaryExpenseIdrRawEl.textContent = formatCurrency(totalExpenseIDR, 'IDR');
-            summaryExpenseIdrConvertedEl.textContent = formatCurrency(totalConvertedExpenseIDR, 'IDR');
+            summaryExpenseIdrEl.textContent = formatCurrency(totalExpenseIDR, 'IDR');
             summaryDaysEl.textContent = dayCount;
             summaryRateEl.textContent = exchangeRate.toFixed(4);
 
@@ -355,7 +347,7 @@
         function setLoadingState(isLoading) {
              if (isLoading) {
                 statusMessage.innerHTML = `<div class="flex items-center gap-2"><div class="loader"></div><p class="text-slate-400">Memuat data...</p></div>`;
-                const summaries = [summaryIncomeEl, summaryExpenseVndEl, summaryBalanceEl, summaryExpenseIdrRawEl, summaryExpenseIdrConvertedEl, summaryDaysEl, summaryRateEl];
+                const summaries = [summaryIncomeEl, summaryExpenseVndEl, summaryBalanceEl, summaryExpenseIdrEl, summaryDaysEl, summaryRateEl];
                 summaries.forEach(el => el.textContent = '-');
                 tableBody.innerHTML = '';
                 tableFoot.innerHTML = '';
