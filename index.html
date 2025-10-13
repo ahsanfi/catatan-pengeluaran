@@ -20,66 +20,70 @@
         tfoot tr { border-top: 2px solid #334155; } /* slate-700 */
     </style>
 </head>
-<body class="bg-slate-900 min-h-screen p-4 text-slate-300">
+<body class="bg-slate-900 min-h-screen p-2 sm:p-4 text-slate-300">
 
-    <div class="bg-slate-800 rounded-xl shadow-lg p-6 md:p-8 w-full max-w-6xl mx-auto border border-slate-700">
+    <div class="bg-slate-800 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-6xl mx-auto border border-slate-700">
 
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-slate-100">Aplikasi Catatan Keuangan</h1>
-            <p class="text-slate-400 mt-2">Menampilkan & Menambah Data ke Google Spreadsheet Anda.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-100">Aplikasi Catatan Keuangan</h1>
+            <p class="text-slate-400 mt-2 text-sm sm:text-base">Menampilkan & Menambah Data ke Google Spreadsheet Anda.</p>
         </div>
 
         <!-- START: Bagian Ringkasan Saldo -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 text-center">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-8 text-center">
             <!-- Kartu Pemasukan (VND) -->
-            <div class="bg-slate-700/50 p-6 rounded-lg border border-green-500/50">
-                <h3 class="text-sm font-medium text-green-300 uppercase tracking-wider">Total Pemasukan (VND)</h3>
-                <p id="summary-income" class="text-3xl font-bold text-green-400 mt-2">-</p>
+            <div class="bg-slate-700/50 p-4 rounded-lg border border-green-500/50">
+                <h3 class="text-xs sm:text-sm font-medium text-green-300 uppercase tracking-wider">Pemasukan (VND)</h3>
+                <p id="summary-income" class="text-xl sm:text-2xl lg:text-3xl font-bold text-green-400 mt-2">-</p>
             </div>
             <!-- Kartu Pengeluaran (VND) -->
-            <div class="bg-slate-700/50 p-6 rounded-lg border border-red-500/50">
-                <h3 class="text-sm font-medium text-red-300 uppercase tracking-wider">Total Pengeluaran (VND)</h3>
-                <p id="summary-expense-vnd" class="text-3xl font-bold text-red-400 mt-2">-</p>
+            <div class="bg-slate-700/50 p-4 rounded-lg border border-red-500/50">
+                <h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider">Pengeluaran (VND)</h3>
+                <p id="summary-expense-vnd" class="text-xl sm:text-2xl lg:text-3xl font-bold text-red-400 mt-2">-</p>
             </div>
             <!-- Kartu Saldo Akhir (VND) -->
-            <div class="bg-slate-700/50 p-6 rounded-lg border border-blue-500/50">
-                <h3 class="text-sm font-medium text-blue-300 uppercase tracking-wider">Saldo Akhir (VND)</h3>
-                <p id="summary-balance-vnd" class="text-3xl font-bold text-blue-400 mt-2">-</p>
+            <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50">
+                <h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Saldo Akhir (VND)</h3>
+                <p id="summary-balance-vnd" class="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-400 mt-2">-</p>
             </div>
              <!-- Kartu Saldo Akhir (IDR) -->
-            <div class="bg-slate-700/50 p-6 rounded-lg border border-blue-500/50">
-                <h3 class="text-sm font-medium text-blue-300 uppercase tracking-wider">Saldo Akhir (IDR)</h3>
-                <p id="summary-balance-idr" class="text-3xl font-bold text-blue-400 mt-2">-</p>
+            <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50">
+                <h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Saldo Akhir (IDR)</h3>
+                <p id="summary-balance-idr" class="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-400 mt-2">-</p>
             </div>
             <!-- Kartu Total Pengeluaran (IDR) -->
-            <div class="bg-slate-700/50 p-6 rounded-lg border border-red-500/50">
-                <h3 class="text-sm font-medium text-red-300 uppercase tracking-wider">Total Pengeluaran (IDR)</h3>
-                <p id="summary-expense-idr" class="text-3xl font-bold text-red-400 mt-2">-</p>
+            <div class="col-span-2 md:col-span-1 bg-slate-700/50 p-4 rounded-lg border border-red-500/50">
+                <h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider">Total Pengeluaran (IDR)</h3>
+                <p id="summary-expense-idr" class="text-xl sm:text-2xl lg:text-3xl font-bold text-red-400 mt-2">-</p>
             </div>
             <!-- Kartu Jumlah Hari -->
-            <div class="bg-slate-700/50 p-6 rounded-lg border border-purple-500/50">
-                <h3 class="text-sm font-medium text-purple-300 uppercase tracking-wider">Jumlah Hari</h3>
-                <p id="summary-days" class="text-3xl font-bold text-purple-400 mt-2">-</p>
+            <div class="bg-slate-700/50 p-4 rounded-lg border border-purple-500/50">
+                <h3 class="text-xs sm:text-sm font-medium text-purple-300 uppercase tracking-wider">Jumlah Hari</h3>
+                <p id="summary-days" class="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-400 mt-2">-</p>
             </div>
             <!-- Kartu Kurs -->
-            <div class="lg:col-start-2 bg-slate-700/50 p-6 rounded-lg border border-amber-500/50">
-                <h3 class="text-sm font-medium text-amber-300 uppercase tracking-wider">Kurs (VND to IDR)</h3>
-                <p id="summary-rate" class="text-3xl font-bold text-amber-400 mt-2">-</p>
+            <div class="bg-slate-700/50 p-4 rounded-lg border border-amber-500/50">
+                <h3 class="text-xs sm:text-sm font-medium text-amber-300 uppercase tracking-wider">Kurs (VND to IDR)</h3>
+                <p id="summary-rate" class="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-400 mt-2">-</p>
             </div>
         </div>
         <!-- END: Bagian Ringkasan Saldo -->
 
         <!-- Bagian Input Data Baru -->
-        <div class="mb-8 p-6 bg-slate-700/50 rounded-lg border border-slate-700">
-            <h2 class="text-xl font-bold text-slate-100 mb-4">Tambah Transaksi Baru (dalam VND)</h2>
-            <form id="add-entry-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <div class="mb-8 p-4 sm:p-6 bg-slate-700/50 rounded-lg border border-slate-700">
+            <h2 class="text-lg sm:text-xl font-bold text-slate-100 mb-4">Tambah Transaksi Baru</h2>
+            <form id="add-entry-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="md:col-span-2">
+                    <label for="entry-description" class="block text-sm font-medium text-slate-300 mb-1">Keterangan</label>
+                    <input type="text" id="entry-description" placeholder="Contoh: Makan siang di kantor" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
                 <div>
                     <label for="entry-date" class="block text-sm font-medium text-slate-300 mb-1">Tanggal</label>
                     <input type="date" id="entry-date" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
-                <div class="lg:col-span-2">
-                    <label for="entry-description" class="block text-sm font-medium text-slate-300 mb-1">Keterangan</label>
-                    <input type="text" id="entry-description" placeholder="Contoh: Makan siang di kantor" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                 <div>
+                    <label for="entry-amount" class="block text-sm font-medium text-slate-300 mb-1">Jumlah (VND)</label>
+                    <input type="number" id="entry-amount" placeholder="50000" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
                     <label for="entry-category" class="block text-sm font-medium text-slate-300 mb-1">Kategori</label>
@@ -95,19 +99,17 @@
                     <input type="text" id="other-category-input" placeholder="Kategori baru" class="hidden w-full mt-2 px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label for="entry-amount" class="block text-sm font-medium text-slate-300 mb-1">Jumlah (VND)</label>
-                    <input type="number" id="entry-amount" placeholder="50000" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-                <div class="md:col-span-2 lg:col-span-2">
                     <label class="block text-sm font-medium text-slate-300 mb-2">Jenis Transaksi</label>
-                    <div class="flex gap-4">
+                    <div class="flex gap-4 mt-1">
                         <label class="flex items-center"><input type="radio" name="entry-type" value="expense" class="h-4 w-4 bg-slate-700 border-slate-600" checked> <span class="ml-2 text-sm">Pengeluaran</span></label>
                         <label class="flex items-center"><input type="radio" name="entry-type" value="income" class="h-4 w-4 bg-slate-700 border-slate-600"> <span class="ml-2 text-sm">Pemasukan</span></label>
                     </div>
                 </div>
-                <button type="submit" id="submit-entry-button" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 transition col-span-full lg:col-span-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-green-500">
-                    Simpan Transaksi
-                </button>
+                <div class="md:col-span-2">
+                    <button type="submit" id="submit-entry-button" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-green-500">
+                        Simpan Transaksi
+                    </button>
+                </div>
             </form>
              <div id="form-status" class="text-center mt-4 min-h-[20px]"></div>
         </div>
@@ -326,9 +328,9 @@
             summaryIncomeEl.textContent = formatCurrency(totalIncomeVND, 'VND');
             summaryExpenseVndEl.textContent = formatCurrency(totalExpenseVND, 'VND');
             summaryBalanceVndEl.textContent = formatCurrency(finalBalanceVND, 'VND');
-            summaryBalanceVndEl.className = `text-3xl font-bold mt-2 ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}`;
+            summaryBalanceVndEl.className = `text-xl sm:text-2xl lg:text-3xl font-bold mt-2 ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}`;
             summaryBalanceIdrEl.textContent = formatCurrency(finalBalanceIDR, 'IDR');
-            summaryBalanceIdrEl.className = `text-3xl font-bold mt-2 ${finalBalanceIDR >= 0 ? 'text-blue-400' : 'text-red-400'}`;
+            summaryBalanceIdrEl.className = `text-xl sm:text-2xl lg:text-3xl font-bold mt-2 ${finalBalanceIDR >= 0 ? 'text-blue-400' : 'text-red-400'}`;
             summaryExpenseIdrEl.textContent = formatCurrency(totalExpenseIDR, 'IDR');
             summaryDaysEl.textContent = dayCount;
             summaryRateEl.textContent = exchangeRate.toFixed(4);
