@@ -30,7 +30,7 @@
         </div>
 
         <!-- START: Bagian Ringkasan Saldo -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 text-center">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 text-center">
             <!-- Kartu Pemasukan (VND) -->
             <div class="bg-slate-700/50 p-6 rounded-lg border border-green-500/50">
                 <h3 class="text-sm font-medium text-green-300 uppercase tracking-wider">Total Pemasukan (VND)</h3>
@@ -44,7 +44,12 @@
             <!-- Kartu Saldo Akhir (VND) -->
             <div class="bg-slate-700/50 p-6 rounded-lg border border-blue-500/50">
                 <h3 class="text-sm font-medium text-blue-300 uppercase tracking-wider">Saldo Akhir (VND)</h3>
-                <p id="summary-balance" class="text-3xl font-bold text-blue-400 mt-2">-</p>
+                <p id="summary-balance-vnd" class="text-3xl font-bold text-blue-400 mt-2">-</p>
+            </div>
+             <!-- Kartu Saldo Akhir (IDR) -->
+            <div class="bg-slate-700/50 p-6 rounded-lg border border-blue-500/50">
+                <h3 class="text-sm font-medium text-blue-300 uppercase tracking-wider">Saldo Akhir (IDR)</h3>
+                <p id="summary-balance-idr" class="text-3xl font-bold text-blue-400 mt-2">-</p>
             </div>
             <!-- Kartu Total Pengeluaran (IDR) -->
             <div class="bg-slate-700/50 p-6 rounded-lg border border-red-500/50">
@@ -57,7 +62,7 @@
                 <p id="summary-days" class="text-3xl font-bold text-purple-400 mt-2">-</p>
             </div>
             <!-- Kartu Kurs -->
-            <div class="bg-slate-700/50 p-6 rounded-lg border border-amber-500/50">
+            <div class="lg:col-start-2 bg-slate-700/50 p-6 rounded-lg border border-amber-500/50">
                 <h3 class="text-sm font-medium text-amber-300 uppercase tracking-wider">Kurs (VND to IDR)</h3>
                 <p id="summary-rate" class="text-3xl font-bold text-amber-400 mt-2">-</p>
             </div>
@@ -145,7 +150,8 @@
         // --- ELEMEN DOM ---
         const summaryIncomeEl = document.getElementById('summary-income');
         const summaryExpenseVndEl = document.getElementById('summary-expense-vnd');
-        const summaryBalanceEl = document.getElementById('summary-balance');
+        const summaryBalanceVndEl = document.getElementById('summary-balance-vnd');
+        const summaryBalanceIdrEl = document.getElementById('summary-balance-idr');
         const summaryExpenseIdrEl = document.getElementById('summary-expense-idr');
         const summaryDaysEl = document.getElementById('summary-days');
         const summaryRateEl = document.getElementById('summary-rate');
@@ -307,6 +313,7 @@
 
             // --- Kalkulasi Baru ---
             const finalBalanceVND = totalIncomeVND - totalExpenseVND;
+            const finalBalanceIDR = finalBalanceVND * exchangeRate;
             let dayCount = 0;
             if (allDates.length > 0) {
                 const minDate = new Date(Math.min.apply(null, allDates));
@@ -318,8 +325,10 @@
             // --- Perbarui Kartu Ringkasan ---
             summaryIncomeEl.textContent = formatCurrency(totalIncomeVND, 'VND');
             summaryExpenseVndEl.textContent = formatCurrency(totalExpenseVND, 'VND');
-            summaryBalanceEl.textContent = formatCurrency(finalBalanceVND, 'VND');
-            summaryBalanceEl.className = `text-3xl font-bold mt-2 ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}`;
+            summaryBalanceVndEl.textContent = formatCurrency(finalBalanceVND, 'VND');
+            summaryBalanceVndEl.className = `text-3xl font-bold mt-2 ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}`;
+            summaryBalanceIdrEl.textContent = formatCurrency(finalBalanceIDR, 'IDR');
+            summaryBalanceIdrEl.className = `text-3xl font-bold mt-2 ${finalBalanceIDR >= 0 ? 'text-blue-400' : 'text-red-400'}`;
             summaryExpenseIdrEl.textContent = formatCurrency(totalExpenseIDR, 'IDR');
             summaryDaysEl.textContent = dayCount;
             summaryRateEl.textContent = exchangeRate.toFixed(4);
@@ -347,7 +356,7 @@
         function setLoadingState(isLoading) {
              if (isLoading) {
                 statusMessage.innerHTML = `<div class="flex items-center gap-2"><div class="loader"></div><p class="text-slate-400">Memuat data...</p></div>`;
-                const summaries = [summaryIncomeEl, summaryExpenseVndEl, summaryBalanceEl, summaryExpenseIdrEl, summaryDaysEl, summaryRateEl];
+                const summaries = [summaryIncomeEl, summaryExpenseVndEl, summaryBalanceVndEl, summaryBalanceIdrEl, summaryExpenseIdrEl, summaryDaysEl, summaryRateEl];
                 summaries.forEach(el => el.textContent = '-');
                 tableBody.innerHTML = '';
                 tableFoot.innerHTML = '';
