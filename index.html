@@ -19,11 +19,9 @@
         .loader { border: 4px solid #334155; border-top: 4px solid #38bdf8; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         tfoot tr { border-top: 2px solid #334155; }
-        /* Style for active tab */
         .tab-active { background-color: #3b82f6; color: #fff; }
-        /* Style for sortable headers */
         .sortable { cursor: pointer; user-select: none; }
-        .sortable:hover { color: #f1f5f9; } /* slate-100 */
+        .sortable:hover { color: #f1f5f9; }
     </style>
 </head>
 <body class="bg-slate-900 min-h-screen p-2 sm:p-4 text-slate-300">
@@ -57,7 +55,7 @@
         <div id="tab-content">
             <!-- Dashboard View -->
             <div id="view-dashboard" class="tab-view">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2">
                         <h2 class="text-lg font-semibold text-slate-200 mb-4">General Summary</h2>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 text-center">
@@ -83,30 +81,16 @@
 
             <!-- Transactions View -->
             <div id="view-transactions" class="tab-view hidden">
-                <!-- Filter Panel -->
                 <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-700 mb-6">
                     <h3 class="font-semibold text-slate-200 mb-3">Filter Transactions</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
-                        <div>
-                            <label for="filter-start-date" class="block text-sm font-medium text-slate-300 mb-1">From Date</label>
-                            <input type="date" id="filter-start-date" class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200">
-                        </div>
-                        <div>
-                            <label for="filter-end-date" class="block text-sm font-medium text-slate-300 mb-1">To Date</label>
-                            <input type="date" id="filter-end-date" class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200">
-                        </div>
-                        <div>
-                            <label for="filter-category" class="block text-sm font-medium text-slate-300 mb-1">Category</label>
-                            <select id="filter-category" class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"></select>
-                        </div>
-                         <div class="sm:col-span-2 md:col-span-4">
-                            <label for="filter-search" class="block text-sm font-medium text-slate-300 mb-1">Search Description</label>
-                            <input type="text" id="filter-search" placeholder="Search transactions..." class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500">
-                        </div>
+                        <div><label for="filter-start-date" class="block text-sm font-medium text-slate-300 mb-1">From Date</label><input type="date" id="filter-start-date" class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"></div>
+                        <div><label for="filter-end-date" class="block text-sm font-medium text-slate-300 mb-1">To Date</label><input type="date" id="filter-end-date" class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"></div>
+                        <div><label for="filter-category" class="block text-sm font-medium text-slate-300 mb-1">Category</label><select id="filter-category" class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"></select></div>
+                        <div class="sm:col-span-2 md:col-span-4"><label for="filter-search" class="block text-sm font-medium text-slate-300 mb-1">Search Description</label><input type="text" id="filter-search" placeholder="Search transactions..." class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500"></div>
                     </div>
                 </div>
-                
-                 <div id="status-message-trans" class="text-center min-h-[40px] flex items-center justify-center"></div>
+                <div id="status-message-trans" class="text-center min-h-[40px] flex items-center justify-center"></div>
                 <div class="overflow-x-auto rounded-lg border border-slate-700">
                     <table class="min-w-full divide-y divide-slate-700">
                         <thead id="trans-thead" class="bg-slate-700">
@@ -128,7 +112,7 @@
             <!-- Daily View -->
             <div id="view-daily" class="tab-view hidden">
                 <div id="status-message-daily" class="text-center min-h-[40px] flex items-center justify-center"></div>
-                 <div class="overflow-x-auto rounded-lg border border-slate-700">
+                <div class="overflow-x-auto rounded-lg border border-slate-700">
                     <table class="min-w-full divide-y divide-slate-700">
                         <thead id="daily-thead" class="bg-slate-700">
                             <tr>
@@ -153,14 +137,7 @@
                         <div>
                             <label for="entry-category" class="block text-sm font-medium text-slate-300 mb-1">Category</label>
                             <select id="entry-category" class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm text-slate-200">
-                                <option>Income</option>
-                                <option>Food & Drink</option>
-                                <option>Transportation</option>
-                                <option>Groceries</option>
-                                <option>Shopping</option>
-                                <option>Communication</option>
-                                <option>Miscellaneous</option>
-                                <option value="Other">Other...</option>
+                                <option>Income</option><option>Food & Drink</option><option>Transportation</option><option>Groceries</option><option>Shopping</option><option>Communication</option><option>Miscellaneous</option><option value="Other">Other...</option>
                             </select>
                             <input type="text" id="other-category-input" placeholder="New category" class="hidden w-full mt-2 px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500">
                         </div>
@@ -181,6 +158,32 @@
         </div>
     </div>
     <!-- END: PIN Modal -->
+
+    <!-- START: Edit Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-700 rounded-lg shadow-xl p-6 w-full max-w-lg border border-slate-600">
+            <h3 class="text-lg font-bold text-slate-100 mb-4">Edit Transaction</h3>
+            <form id="edit-entry-form" class="space-y-4">
+                <div><label for="edit-description" class="block text-sm font-medium text-slate-300 mb-1">Description</label><input type="text" id="edit-description" class="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md shadow-sm text-slate-200" required></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label for="edit-date" class="block text-sm font-medium text-slate-300 mb-1">Date</label><input type="date" id="edit-date" class="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md shadow-sm text-slate-200" required></div>
+                    <div><label for="edit-amount" class="block text-sm font-medium text-slate-300 mb-1">Amount (VND)</label><input type="number" id="edit-amount" class="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md shadow-sm text-slate-200" required></div>
+                </div>
+                <div>
+                    <label for="edit-category" class="block text-sm font-medium text-slate-300 mb-1">Category</label>
+                    <select id="edit-category" class="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md shadow-sm text-slate-200">
+                        <option>Income</option><option>Food & Drink</option><option>Transportation</option><option>Groceries</option><option>Shopping</option><option>Communication</option><option>Miscellaneous</option><option value="Other">Other...</option>
+                    </select>
+                    <input type="text" id="edit-other-category-input" placeholder="New category" class="hidden w-full mt-2 px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-200 placeholder-slate-400">
+                </div>
+                <div class="flex justify-end gap-4 pt-4">
+                    <button type="button" id="cancel-edit-btn" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white font-semibold rounded-md transition">Cancel</button>
+                    <button type="submit" id="confirm-edit-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END: Edit Modal -->
 
     <!-- START: Delete Confirmation Modal -->
     <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
@@ -207,12 +210,10 @@
         // --- END OF CONFIGURATION ---
 
         // --- State Management ---
-        let masterData = [];
-        let exchangeRate = 0;
-        let expenseChart = null;
+        let masterData = [], exchangeRate = 0, expenseChart = null;
         let transSortState = { key: 'date', order: 'desc' };
         let dailySortState = { key: 'date', order: 'desc' };
-
+        let itemToEdit = null, itemToDelete = null;
 
         // --- DOM ELEMENTS ---
         const mainContent = document.getElementById('main-content');
@@ -242,6 +243,9 @@
         const deleteModalItem = document.getElementById('delete-modal-item');
         const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
         const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const editModal = document.getElementById('edit-modal');
+        const editEntryForm = document.getElementById('edit-entry-form');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
         const filterInputs = document.querySelectorAll('.filter-input');
         const categoryFilter = document.getElementById('filter-category');
         const tabButtons = document.querySelectorAll('.tab-btn');
@@ -250,109 +254,17 @@
         const transThead = document.getElementById('trans-thead');
         const dailyThead = document.getElementById('daily-thead');
         
-        let itemToDelete = null;
-        
         entryDateInput.valueAsDate = new Date();
 
         // --- MAIN FUNCTIONS ---
-        function showApp() {
-            pinModal.classList.add('hidden');
-            mainContent.classList.remove('hidden');
-            fetchData();
-        }
-
-        function handlePinSubmit(event) {
-            event.preventDefault();
-            if (pinInput.value === CORRECT_PIN) {
-                sessionStorage.setItem('isAuthenticated', 'true');
-                showApp();
-            } else {
-                pinError.textContent = "Incorrect PIN. Please try again.";
-                pinInput.value = '';
-            }
-        }
-
-        async function fetchData() {
-            setLoadingState(true, 'trans');
-            setLoadingState(true, 'daily');
-            const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values`;
-            try {
-                const [incomeRes, expenseRes, rateRes] = await Promise.all([
-                    fetch(`${baseUrl}/${INCOME_SHEET_NAME}!${DATA_RANGE}?key=${API_KEY}`),
-                    fetch(`${baseUrl}/${EXPENSE_SHEET_NAME}!${DATA_RANGE}?key=${API_KEY}`),
-                    fetch(`${baseUrl}/${SUMMARY_SHEET_NAME}!${RATE_CELL}?key=${API_KEY}`)
-                ]);
-                const [incomeJson, expenseJson, rateJson] = await Promise.all([
-                    incomeRes.json(), expenseRes.json(), rateRes.json()
-                ]);
-
-                if (!incomeRes.ok) throw new Error(`Income Sheet: ${incomeJson.error.message}`);
-                if (!expenseRes.ok) throw new Error(`Expenses Sheet: ${expenseJson.error.message}`);
-                if (!rateRes.ok) throw new Error(`Rate (Summary Sheet): ${rateJson.error.message}`);
-
-                exchangeRate = parseFloat((rateJson.values[0][0] || '0').replace(/,/g, '')) || 0;
-                
-                processAndStoreData(incomeJson.values, expenseJson.values);
-                populateCategoryFilter();
-                applyFilters();
-
-            } catch (error) {
-                showError(error.message, 'trans');
-            } finally {
-                setLoadingState(false, 'trans');
-                setLoadingState(false, 'daily');
-            }
-        }
+        // (Authentication and Data Fetching are unchanged)
+        function showApp() { pinModal.classList.add('hidden'); mainContent.classList.remove('hidden'); fetchData(); }
+        function handlePinSubmit(event) { event.preventDefault(); if (pinInput.value === CORRECT_PIN) { sessionStorage.setItem('isAuthenticated', 'true'); showApp(); } else { pinError.textContent = "Incorrect PIN. Please try again."; pinInput.value = ''; } }
+        async function fetchData() { setLoadingState(true, 'trans'); setLoadingState(true, 'daily'); const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values`; try { const [incomeRes, expenseRes, rateRes] = await Promise.all([ fetch(`${baseUrl}/${INCOME_SHEET_NAME}!${DATA_RANGE}?key=${API_KEY}`), fetch(`${baseUrl}/${EXPENSE_SHEET_NAME}!${DATA_RANGE}?key=${API_KEY}`), fetch(`${baseUrl}/${SUMMARY_SHEET_NAME}!${RATE_CELL}?key=${API_KEY}`) ]); const [incomeJson, expenseJson, rateJson] = await Promise.all([ incomeRes.json(), expenseRes.json(), rateRes.json() ]); if (!incomeRes.ok) throw new Error(`Income Sheet: ${incomeJson.error.message}`); if (!expenseRes.ok) throw new Error(`Expenses Sheet: ${expenseJson.error.message}`); if (!rateRes.ok) throw new Error(`Rate (Summary Sheet): ${rateJson.error.message}`); exchangeRate = parseFloat((rateJson.values[0][0] || '0').replace(/,/g, '')) || 0; processAndStoreData(incomeJson.values, expenseJson.values); populateCategoryFilter(); applyFilters(); } catch (error) { showError(error.message, 'trans'); } finally { setLoadingState(false, 'trans'); setLoadingState(false, 'daily'); } }
+        function processAndStoreData(incomeRows, expenseRows) { masterData = []; if (incomeRows) { incomeRows.forEach(row => { if(!row[0]) return; const amountVND = parseFloat((row[3] || '0').replace(/,/g, '')); const amountIDR = parseFloat((row[4] || '0').replace(/,/g, '')); masterData.push({ type: 'income', date: row[0], description: row[1], category: row[2] || 'Uncategorized', amountVND, amountIDR }); }); } if (expenseRows) { expenseRows.forEach(row => { if(!row[0]) return; const amountVND = parseFloat((row[3] || '0').replace(/,/g, '')); const amountIDR = parseFloat((row[4] || '0').replace(/,/g, '')); masterData.push({ type: 'expense', date: row[0], description: row[1], category: row[2] || 'Uncategorized', amountVND: Math.abs(amountVND), amountIDR: Math.abs(amountIDR) }); }); } }
+        function applyFilters() { const startDate = document.getElementById('filter-start-date').value; const endDate = document.getElementById('filter-end-date').value; const category = categoryFilter.value; const searchTerm = document.getElementById('filter-search').value.toLowerCase(); let filteredData = masterData.filter(item => { if (startDate && new Date(item.date) < new Date(startDate)) return false; if (endDate && new Date(item.date) > new Date(endDate)) return false; if (category && category !== 'all' && item.category !== category) return false; if (searchTerm && !item.description.toLowerCase().includes(searchTerm)) return false; return true; }); sortData(filteredData, transSortState); renderAll(filteredData); }
+        function sortData(data, state) { data.sort((a, b) => { const aVal = state.key === 'date' ? new Date(a.date) : a[state.key]; const bVal = state.key === 'date' ? new Date(b.date) : b[state.key]; if (aVal < bVal) return state.order === 'asc' ? -1 : 1; if (aVal > bVal) return state.order === 'asc' ? 1 : -1; return 0; }); }
         
-        function processAndStoreData(incomeRows, expenseRows) {
-            masterData = [];
-             if (incomeRows) {
-                incomeRows.forEach(row => {
-                    if(!row[0]) return;
-                    const amountVND = parseFloat((row[3] || '0').replace(/,/g, ''));
-                    const amountIDR = parseFloat((row[4] || '0').replace(/,/g, ''));
-                    masterData.push({ type: 'income', date: row[0], description: row[1], category: row[2] || 'Uncategorized', amountVND, amountIDR });
-                });
-            }
-            if (expenseRows) {
-                expenseRows.forEach(row => {
-                    if(!row[0]) return;
-                    const amountVND = parseFloat((row[3] || '0').replace(/,/g, ''));
-                    const amountIDR = parseFloat((row[4] || '0').replace(/,/g, ''));
-                    masterData.push({ type: 'expense', date: row[0], description: row[1], category: row[2] || 'Uncategorized', amountVND: Math.abs(amountVND), amountIDR: Math.abs(amountIDR) });
-                });
-            }
-        }
-
-        function applyFilters() {
-            const startDate = document.getElementById('filter-start-date').value;
-            const endDate = document.getElementById('filter-end-date').value;
-            const category = categoryFilter.value;
-            const searchTerm = document.getElementById('filter-search').value.toLowerCase();
-
-            let filteredData = masterData.filter(item => {
-                const itemDate = new Date(item.date);
-                if (startDate && new Date(item.date) < new Date(startDate)) return false;
-                if (endDate && new Date(item.date) > new Date(endDate)) return false;
-                if (category && category !== 'all' && item.category !== category) return false;
-                if (searchTerm && !item.description.toLowerCase().includes(searchTerm)) return false;
-                return true;
-            });
-            
-            sortData(filteredData, transSortState);
-            renderAll(filteredData);
-        }
-
-        function sortData(data, state) {
-            data.sort((a, b) => {
-                const aVal = state.key === 'date' ? new Date(a.date) : a[state.key];
-                const bVal = state.key === 'date' ? new Date(b.date) : b[state.key];
-                if (aVal < bVal) return state.order === 'asc' ? -1 : 1;
-                if (aVal > bVal) return state.order === 'asc' ? 1 : -1;
-                return 0;
-            });
-        }
-
         function renderAll(data) {
             renderTable(data);
             updateSummaryCards(data);
@@ -362,12 +274,8 @@
         }
 
         function renderTable(data) {
-             tableBody.innerHTML = '';
-            if (data.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500">No matching transactions found.</td></tr>`;
-                tableFoot.innerHTML = '';
-                return;
-            } 
+            tableBody.innerHTML = '';
+            if (data.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500">No matching transactions found.</td></tr>`; tableFoot.innerHTML = ''; return; } 
             data.forEach(item => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-700';
@@ -378,54 +286,19 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${item.category || '-'}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-right ${colorClass}">${item.amountVND ? formatCurrency(item.amountVND, 'VND') : '-'}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-right ${colorClass}">${item.amountIDR ? formatCurrency(item.amountIDR, 'IDR') : '-'}</td>
-                    <td class="px-2 py-4 whitespace-nowrap text-center text-sm">
+                    <td class="px-2 py-4 whitespace-nowrap text-center text-sm flex justify-center items-center space-x-2">
+                        <button class="edit-btn text-slate-500 hover:text-blue-400 p-1" title="Edit" data-item='${encodeURIComponent(JSON.stringify(item))}'><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></button>
                         <button class="delete-btn text-slate-500 hover:text-red-400 p-1" title="Delete" data-item='${encodeURIComponent(JSON.stringify(item))}'><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                     </td>
                 `;
                 tableBody.appendChild(tr);
             });
         }
-
-        function renderDailySummary(data) {
-            let dailyTotals = data
-                .filter(item => item.type === 'expense')
-                .reduce((acc, item) => {
-                    const date = item.date;
-                    if (!acc[date]) {
-                        acc[date] = { date: date, totalVND: 0, totalIDR: 0 };
-                    }
-                    acc[date].totalVND += item.amountVND;
-                    acc[date].totalIDR += item.amountIDR;
-                    return acc;
-                }, {});
-
-            let dailyArray = Object.values(dailyTotals);
-
-            sortData(dailyArray, dailySortState);
-
-            dailySummaryBody.innerHTML = '';
-            if (dailyArray.length === 0) {
-                 dailySummaryBody.innerHTML = `<tr><td colspan="3" class="px-6 py-12 text-center text-slate-500">No expenses to display.</td></tr>`;
-                 return;
-            }
-
-            dailyArray.forEach(day => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-700';
-                tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-100">${day.date}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-400">${formatCurrency(day.totalVND, 'VND')}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-400">${formatCurrency(day.totalIDR, 'IDR')}</td>
-                `;
-                dailySummaryBody.appendChild(tr);
-            });
-            updateSortIndicators(dailyThead, dailySortState);
-        }
         
+        function renderDailySummary(data) { let dailyTotals = data.filter(item => item.type === 'expense').reduce((acc, item) => { const date = item.date; if (!acc[date]) { acc[date] = { date: date, totalVND: 0, totalIDR: 0 }; } acc[date].totalVND += item.amountVND; acc[date].totalIDR += item.amountIDR; return acc; }, {}); let dailyArray = Object.values(dailyTotals); sortData(dailyArray, dailySortState); dailySummaryBody.innerHTML = ''; if (dailyArray.length === 0) { dailySummaryBody.innerHTML = `<tr><td colspan="3" class="px-6 py-12 text-center text-slate-500">No expenses to display.</td></tr>`; return; } dailyArray.forEach(day => { const tr = document.createElement('tr'); tr.className = 'hover:bg-slate-700'; tr.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-100">${day.date}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-400">${formatCurrency(day.totalVND, 'VND')}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-400">${formatCurrency(day.totalIDR, 'IDR')}</td>`; dailySummaryBody.appendChild(tr); }); updateSortIndicators(dailyThead, dailySortState); }
         function updateSummaryCards(data) {
             let totalIncomeVND = 0, totalExpenseVND = 0, totalExpenseIDR = 0;
             const allDates = [];
-
             data.forEach(item => {
                 if(item.date) allDates.push(new Date(item.date));
                 if (item.type === 'income') {
@@ -435,21 +308,16 @@
                     totalExpenseIDR += item.amountIDR;
                 }
             });
-
             const finalBalanceVND = totalIncomeVND - totalExpenseVND;
             const finalBalanceIDR = finalBalanceVND * exchangeRate;
             let dayCount = 0;
             if (allDates.length > 0) {
-                const uniqueDates = [...new Set(allDates.map(d => d.toISOString().slice(0,10)))];
-                dayCount = uniqueDates.length;
+                const minDate = new Date(Math.min.apply(null, allDates));
+                const maxDate = new Date(Math.max.apply(null, allDates));
+                dayCount = Math.ceil(Math.abs(maxDate - minDate) / (1000 * 3600 * 24)) + 1;
             }
-            
             const avgDailyExpense = dayCount > 0 ? totalExpenseVND / dayCount : 0;
-            const topExpenses = data
-                .filter(item => item.type === 'expense')
-                .sort((a, b) => b.amountVND - a.amountVND)
-                .slice(0, 3);
-            
+            const topExpenses = data.filter(item => item.type === 'expense').sort((a, b) => b.amountVND - a.amountVND).slice(0, 3);
             summaryIncomeEl.textContent = formatCurrency(totalIncomeVND, 'VND');
             summaryExpenseVndEl.textContent = formatCurrency(totalExpenseVND, 'VND');
             summaryBalanceVndEl.textContent = formatCurrency(finalBalanceVND, 'VND');
@@ -460,7 +328,6 @@
             summaryDaysEl.textContent = dayCount;
             summaryRateEl.textContent = exchangeRate.toFixed(4);
             summaryAvgDailyExpenseEl.textContent = formatCurrency(avgDailyExpense, 'VND');
-            
             let topExpensesHTML = '<ul class="text-left text-sm space-y-1 mt-2">';
             if (topExpenses.length > 0) {
                 topExpenses.forEach(exp => {
@@ -471,89 +338,23 @@
             }
             topExpensesHTML += '</ul>';
             summaryTopExpensesEl.innerHTML = topExpensesHTML;
-
-
-             tableFoot.innerHTML = `
-                <tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Income (VND)</td><td class="px-6 py-3 text-right text-sm text-green-400">${formatCurrency(totalIncomeVND, 'VND')}</td><td colspan="2"></td></tr>
-                <tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Expenses (VND)</td><td class="px-6 py-3 text-right text-sm text-red-400">${formatCurrency(totalExpenseVND, 'VND')}</td><td colspan="2"></td></tr>
-                <tr><td colspan="3" class="px-6 py-4 text-right font-bold text-slate-100">FINAL BALANCE (VND)</td><td class="px-6 py-4 text-right font-bold ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}">${formatCurrency(finalBalanceVND, 'VND')}</td><td colspan="2"></td></tr>
-            `;
+            tableFoot.innerHTML = `<tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Income (VND)</td><td class="px-6 py-3 text-right text-sm text-green-400">${formatCurrency(totalIncomeVND, 'VND')}</td><td colspan="2"></td></tr><tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Expenses (VND)</td><td class="px-6 py-3 text-right text-sm text-red-400">${formatCurrency(totalExpenseVND, 'VND')}</td><td colspan="2"></td></tr><tr><td colspan="3" class="px-6 py-4 text-right font-bold text-slate-100">FINAL BALANCE (VND)</td><td class="px-6 py-4 text-right font-bold ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}">${formatCurrency(finalBalanceVND, 'VND')}</td><td colspan="2"></td></tr>`;
         }
-
-        function updatePieChart(data) {
-            const expenseData = data.filter(item => item.type === 'expense');
-            const categoryTotals = expenseData.reduce((acc, item) => {
-                acc[item.category] = (acc[item.category] || 0) + item.amountVND;
-                return acc;
-            }, {});
-
-            const labels = Object.keys(categoryTotals);
-            const values = Object.values(categoryTotals);
-            const colors = ['#f87171', '#fb923c', '#facc15', '#a3e635', '#4ade80', '#38bdf8', '#818cf8', '#c084fc'];
-
-            const chartData = {
-                labels: labels,
-                datasets: [{
-                    label: 'Expenses VND',
-                    data: values,
-                    backgroundColor: colors,
-                    borderColor: '#1e293b',
-                    hoverOffset: 4
-                }]
-            };
-
-            const ctx = document.getElementById('expense-pie-chart').getContext('2d');
-            if(expenseChart) {
-                expenseChart.destroy();
-            }
-            expenseChart = new Chart(ctx, {
-                type: 'pie',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } } }
-                }
-            });
-        }
-        
-        function populateCategoryFilter() {
-            const categories = [...new Set(masterData.map(item => item.category))];
-            categoryFilter.innerHTML = '<option value="all">All Categories</option>';
-            categories.sort().forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                categoryFilter.appendChild(option);
-            });
-        }
-        
-        function updateSortIndicators(theadEl, state) {
-            theadEl.querySelectorAll('.sort-indicator').forEach(el => el.textContent = '');
-            const activeHeader = theadEl.querySelector(`[data-sort="${state.key}"]`);
-            if (activeHeader) {
-                activeHeader.querySelector('.sort-indicator').textContent = state.order === 'desc' ? ' ▼' : ' ▲';
-            }
-        }
-
-        function switchTab(targetId) {
-            tabViews.forEach(view => view.classList.add('hidden'));
-            document.getElementById(targetId).classList.remove('hidden');
-            tabButtons.forEach(btn => btn.classList.remove('tab-active', 'text-white'));
-            tabButtons.forEach(btn => btn.classList.add('text-slate-400'));
-            const activeBtn = document.getElementById(`tab-${targetId.split('-')[1]}`);
-            activeBtn.classList.add('tab-active', 'text-white');
-            activeBtn.classList.remove('text-slate-400');
-        }
+        function updatePieChart(data) { const expenseData = data.filter(item => item.type === 'expense'); const categoryTotals = expenseData.reduce((acc, item) => { acc[item.category] = (acc[item.category] || 0) + item.amountVND; return acc; }, {}); const labels = Object.keys(categoryTotals); const values = Object.values(categoryTotals); const colors = ['#f87171', '#fb923c', '#facc15', '#a3e635', '#4ade80', '#38bdf8', '#818cf8', '#c084fc']; const chartData = { labels: labels, datasets: [{ label: 'Expenses VND', data: values, backgroundColor: colors, borderColor: '#1e293b', hoverOffset: 4 }] }; const ctx = document.getElementById('expense-pie-chart').getContext('2d'); if(expenseChart) { expenseChart.destroy(); } expenseChart = new Chart(ctx, { type: 'pie', data: chartData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } } } } }); }
+        function populateCategoryFilter() { const categories = [...new Set(masterData.map(item => item.category))]; categoryFilter.innerHTML = '<option value="all">All Categories</option>'; categories.sort().forEach(cat => { const option = document.createElement('option'); option.value = cat; option.textContent = cat; categoryFilter.appendChild(option); }); }
+        function updateSortIndicators(theadEl, state) { theadEl.querySelectorAll('.sort-indicator').forEach(el => el.textContent = ''); const activeHeader = theadEl.querySelector(`[data-sort="${state.key}"]`); if (activeHeader) { activeHeader.querySelector('.sort-indicator').textContent = state.order === 'desc' ? ' ▼' : ' ▲'; } }
+        function switchTab(targetId) { tabViews.forEach(view => view.classList.add('hidden')); document.getElementById(targetId).classList.remove('hidden'); tabButtons.forEach(btn => btn.classList.remove('tab-active', 'text-white')); tabButtons.forEach(btn => btn.classList.add('text-slate-400')); const activeBtn = document.getElementById(`tab-${targetId.split('-')[1]}`); activeBtn.classList.add('tab-active', 'text-white'); activeBtn.classList.remove('text-slate-400'); }
         
         function handleFormSubmit(event) { event.preventDefault(); const entryType = document.querySelector('input[name="entry-type"]:checked').value; const amount = parseFloat(document.getElementById('entry-amount').value); const sheetName = entryType === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME; let category = categorySelect.value; if (category === 'Other') { category = otherCategoryInput.value.trim(); if (!category) { showFormStatus('Please enter a new category.', 'error'); return; } } const payload = { action: 'add', sheetName: sheetName, date: document.getElementById('entry-date').value, description: document.getElementById('entry-description').value, category: category, amount: entryType === 'expense' ? -Math.abs(amount) : Math.abs(amount) }; setFormLoading(true); fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => res.json()).then(data => { if (data.status === 'success') { showFormStatus('Transaction saved! Reloading...', 'success'); addEntryForm.reset(); entryDateInput.valueAsDate = new Date(); otherCategoryInput.classList.add('hidden'); setTimeout(() => { fetchData(); showFormStatus('', 'success'); switchTab('view-transactions'); }, 1500); } else { throw new Error(data.message); } }).catch(error => { showFormStatus(`Failed: ${error.message}`, 'error'); }).finally(() => { setFormLoading(false); }); }
-        function handleConfirmDelete() { if (!itemToDelete) return; const originalButtonText = confirmDeleteBtn.innerHTML; confirmDeleteBtn.disabled = true; confirmDeleteBtn.innerHTML = `<div class="loader mx-auto"></div>`; const sheetName = itemToDelete.type === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME; const payload = { action: 'delete', sheetName: sheetName, date: itemToDelete.date, description: itemToDelete.description, amountVND: itemToDelete.amountVND }; fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => res.json()).then(data => { if (data.status === 'success') { closeDeleteModal(); setTimeout(() => fetchData(), 1500); } else { throw new Error(data.message); } }).catch(error => { alert(`Failed to delete: ${error.message}`); }).finally(() => { confirmDeleteBtn.disabled = false; confirmDeleteBtn.innerHTML = originalButtonText; }); }
+        function handleConfirmDelete() { if (!itemToDelete) return; const btn = confirmDeleteBtn; const originalText = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<div class="loader mx-auto"></div>`; const sheetName = itemToDelete.type === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME; const payload = { action: 'delete', sheetName: sheetName, originalData: itemToDelete }; fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => res.json()).then(data => { if (data.status === 'success') { closeDeleteModal(); setTimeout(() => fetchData(), 1500); } else { throw new Error(data.message); } }).catch(error => { alert(`Failed to delete: ${error.message}`); }).finally(() => { btn.disabled = false; btn.innerHTML = originalText; }); }
+        function handleEditFormSubmit(event) { event.preventDefault(); if (!itemToEdit) return; const btn = document.getElementById('confirm-edit-btn'); const originalText = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<div class="loader mx-auto"></div>`; const sheetName = itemToEdit.type === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME; let category = document.getElementById('edit-category').value; if (category === 'Other') { category = document.getElementById('edit-other-category-input').value.trim(); } const newAmount = parseFloat(document.getElementById('edit-amount').value); const payload = { action: 'edit', sheetName: sheetName, originalData: itemToEdit, newData: { date: document.getElementById('edit-date').value, description: document.getElementById('edit-description').value, category: category, amount: itemToEdit.type === 'expense' ? -Math.abs(newAmount) : Math.abs(newAmount) } }; fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => res.json()).then(data => { if (data.status === 'success') { closeEditModal(); setTimeout(() => fetchData(), 1500); } else { throw new Error(data.message); } }).catch(error => { alert(`Failed to edit: ${error.message}`); }).finally(() => { btn.disabled = false; btn.innerHTML = originalText; }); }
+        
         function openDeleteModal(item) { itemToDelete = item; deleteModalItem.innerHTML = `<strong class="text-slate-100">${item.description}</strong><br><span class="text-slate-400">${item.date}</span> | <span class="${item.type === 'income' ? 'text-green-400' : 'text-red-400'}">${formatCurrency(item.amountVND, 'VND')}</span>`; deleteModal.classList.remove('hidden'); }
         function closeDeleteModal() { itemToDelete = null; deleteModal.classList.add('hidden'); }
-        function setLoadingState(isLoading, view) { 
-            const el = document.getElementById(`status-message-${view}`);
-            if(el) el.innerHTML = isLoading ? `<div class="flex items-center justify-center gap-2"><div class="loader"></div><p class="text-slate-400">Loading data...</p></div>` : ''; 
-        }
+        function openEditModal(item) { itemToEdit = item; document.getElementById('edit-description').value = item.description; document.getElementById('edit-date').value = item.date; document.getElementById('edit-amount').value = item.amountVND; const editCategorySelect = document.getElementById('edit-category'); const editOtherCategory = document.getElementById('edit-other-category-input'); const options = Array.from(editCategorySelect.options).map(opt => opt.value); if (options.includes(item.category)) { editCategorySelect.value = item.category; editOtherCategory.classList.add('hidden'); } else { editCategorySelect.value = 'Other'; editOtherCategory.value = item.category; editOtherCategory.classList.remove('hidden'); } editModal.classList.remove('hidden'); }
+        function closeEditModal() { itemToEdit = null; editModal.classList.add('hidden'); }
+
+        function setLoadingState(isLoading, view) { const el = document.getElementById(`status-message-${view}`); if(el) el.innerHTML = isLoading ? `<div class="flex items-center justify-center gap-2"><div class="loader"></div><p class="text-slate-400">Loading data...</p></div>` : ''; }
         function setFormLoading(isLoading) { const btn = document.getElementById('submit-entry-button'); btn.disabled = isLoading; if (isLoading) { btn.classList.add('opacity-50'); btn.innerHTML = `<div class="loader mx-auto"></div>`; } else { btn.classList.remove('opacity-50'); btn.textContent = 'Save Transaction'; } }
         function showFormStatus(message, type) { formStatus.textContent = message; formStatus.className = `text-center mt-4 min-h-[20px] text-sm font-medium ${type === 'success' ? 'text-green-400' : 'text-red-400'}`; }
         function showError(message, view) { const el = document.getElementById(`status-message-${view}`); if(el) el.innerHTML = `<p class="text-red-400 font-medium text-center">${message}</p>`; }
@@ -564,48 +365,17 @@
         pinForm.addEventListener('submit', handlePinSubmit);
         logoutBtn.addEventListener('click', () => { sessionStorage.removeItem('isAuthenticated'); window.location.reload(); });
         addEntryForm.addEventListener('submit', handleFormSubmit);
-        categorySelect.addEventListener('change', () => { 
-            otherCategoryInput.classList.toggle('hidden', categorySelect.value !== 'Other');
-            const incomeRadio = document.querySelector('input[name="entry-type"][value="income"]');
-            const expenseRadio = document.querySelector('input[name="entry-type"][value="expense"]');
-            if (categorySelect.value === 'Income') {
-                incomeRadio.checked = true;
-            } else {
-                expenseRadio.checked = true;
-            }
-        });
-        tableBody.addEventListener('click', (event) => { const deleteButton = event.target.closest('.delete-btn'); if (deleteButton) { openDeleteModal(JSON.parse(decodeURIComponent(deleteButton.dataset.item))); } });
+        editEntryForm.addEventListener('submit', handleEditFormSubmit);
+        cancelEditBtn.addEventListener('click', closeEditModal);
+        categorySelect.addEventListener('change', () => { otherCategoryInput.classList.toggle('hidden', categorySelect.value !== 'Other'); const incomeRadio = document.querySelector('input[name="entry-type"][value="income"]'); const expenseRadio = document.querySelector('input[name="entry-type"][value="expense"]'); if (categorySelect.value === 'Income') { incomeRadio.checked = true; } else { expenseRadio.checked = true; } });
+        document.getElementById('edit-category').addEventListener('change', (e) => { document.getElementById('edit-other-category-input').classList.toggle('hidden', e.target.value !== 'Other'); });
+        tableBody.addEventListener('click', (event) => { const targetBtn = event.target.closest('button'); if (!targetBtn) return; if (targetBtn.classList.contains('delete-btn')) { openDeleteModal(JSON.parse(decodeURIComponent(targetBtn.dataset.item))); } if (targetBtn.classList.contains('edit-btn')) { openEditModal(JSON.parse(decodeURIComponent(targetBtn.dataset.item))); } });
         cancelDeleteBtn.addEventListener('click', closeDeleteModal);
         confirmDeleteBtn.addEventListener('click', handleConfirmDelete);
         filterInputs.forEach(input => input.addEventListener('input', applyFilters));
         tabButtons.forEach(button => { button.addEventListener('click', (e) => switchTab(`view-${e.target.id.split('-')[1]}`)); });
-        
-        transThead.addEventListener('click', (e) => {
-            const header = e.target.closest('.sortable');
-            if (!header) return;
-            const key = header.dataset.sort;
-            if (transSortState.key === key) {
-                transSortState.order = transSortState.order === 'desc' ? 'asc' : 'desc';
-            } else {
-                transSortState.key = key;
-                transSortState.order = 'desc';
-            }
-            applyFilters();
-        });
-        
-        dailyThead.addEventListener('click', (e) => {
-            const header = e.target.closest('.sortable');
-            if (!header) return;
-            const key = header.dataset.sort;
-            if (dailySortState.key === key) {
-                dailySortState.order = dailySortState.order === 'desc' ? 'asc' : 'desc';
-            } else {
-                dailySortState.key = key;
-                dailySortState.order = 'desc';
-            }
-            applyFilters();
-        });
-
+        transThead.addEventListener('click', (e) => { const header = e.target.closest('.sortable'); if (!header) return; const key = header.dataset.sort; if (transSortState.key === key) { transSortState.order = transSortState.order === 'desc' ? 'asc' : 'desc'; } else { transSortState.key = key; transSortState.order = 'desc'; } applyFilters(); });
+        dailyThead.addEventListener('click', (e) => { const header = e.target.closest('.sortable'); if (!header) return; const key = header.dataset.sort; if (dailySortState.key === key) { dailySortState.order = dailySortState.order === 'desc' ? 'asc' : 'desc'; } else { dailySortState.key = key; dailySortState.order = 'desc'; } applyFilters(); });
     </script>
 </body>
 </html>
