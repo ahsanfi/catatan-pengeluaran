@@ -66,8 +66,10 @@
                            <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50"><h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Final Balance (VND)</h3><p id="summary-balance-vnd" class="text-xl sm:text-2xl font-bold text-blue-400 mt-2">-</p></div>
                            <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50"><h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Final Balance (IDR)</h3><p id="summary-balance-idr" class="text-xl sm:text-2xl font-bold text-blue-400 mt-2">-</p></div>
                            <div class="bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider">Total Expenses (IDR)</h3><p id="summary-expense-idr" class="text-xl sm:text-2xl font-bold text-red-400 mt-2">-</p></div>
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-purple-500/50"><h3 class="text-xs sm:text-sm font-medium text-purple-300 uppercase tracking-wider">Total Days</h3><p id="summary-days" class="text-xl sm:text-2xl font-bold text-purple-400 mt-2">-</p></div>
                            <div class="bg-slate-700/50 p-4 rounded-lg border border-amber-500/50"><h3 class="text-xs sm:text-sm font-medium text-amber-300 uppercase tracking-wider">Rate (VND to IDR)</h3><p id="summary-rate" class="text-xl sm:text-2xl font-bold text-amber-400 mt-2">-</p></div>
+                           <div class="bg-slate-700/50 p-4 rounded-lg border border-purple-500/50"><h3 class="text-xs sm:text-sm font-medium text-purple-300 uppercase tracking-wider">Total Days</h3><p id="summary-days" class="text-xl sm:text-2xl font-bold text-purple-400 mt-2">-</p></div>
+                           <div class="bg-slate-700/50 p-4 rounded-lg border border-yellow-500/50"><h3 class="text-xs sm:text-sm font-medium text-yellow-300 uppercase tracking-wider">Avg. Daily Expense</h3><p id="summary-avg-daily-expense" class="text-xl sm:text-2xl font-bold text-yellow-400 mt-2">-</p></div>
+                           <div class="md:col-span-3 bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider text-center">Top 3 Expenses (VND)</h3><div id="summary-top-expenses" class="mt-2 text-left"></div></div>
                         </div>
                     </div>
                     <div class="bg-slate-700/50 p-4 sm:p-6 rounded-lg border border-slate-700">
@@ -225,6 +227,8 @@
         const summaryExpenseIdrEl = document.getElementById('summary-expense-idr');
         const summaryDaysEl = document.getElementById('summary-days');
         const summaryRateEl = document.getElementById('summary-rate');
+        const summaryAvgDailyExpenseEl = document.getElementById('summary-avg-daily-expense');
+        const summaryTopExpensesEl = document.getElementById('summary-top-expenses');
         const tableBody = document.getElementById('data-body');
         const tableFoot = document.getElementById('table-foot');
         const dailySummaryBody = document.getElementById('daily-summary-body');
@@ -335,7 +339,6 @@
                 return true;
             });
             
-            // Apply sorting before rendering
             sortData(filteredData, transSortState);
             renderAll(filteredData);
         }
@@ -398,7 +401,6 @@
 
             let dailyArray = Object.values(dailyTotals);
 
-            // Sort daily summary data
             sortData(dailyArray, dailySortState);
 
             dailySummaryBody.innerHTML = '';
@@ -438,10 +440,15 @@
             const finalBalanceIDR = finalBalanceVND * exchangeRate;
             let dayCount = 0;
             if (allDates.length > 0) {
-                const minDate = new Date(Math.min.apply(null, allDates));
-                const maxDate = new Date(Math.max.apply(null, allDates));
-                dayCount = Math.ceil(Math.abs(maxDate - minDate) / (1000 * 3600 * 24)) + 1;
+                const uniqueDates = [...new Set(allDates.map(d => d.toISOString().slice(0,10)))];
+                dayCount = uniqueDates.length;
             }
+            
+            const avgDailyExpense = dayCount > 0 ? totalExpenseVND / dayCount : 0;
+            const topExpenses = data
+                .filter(item => item.type === 'expense')
+                .sort((a, b) => b.amountVND - a.amountVND)
+                .slice(0, 3);
             
             summaryIncomeEl.textContent = formatCurrency(totalIncomeVND, 'VND');
             summaryExpenseVndEl.textContent = formatCurrency(totalExpenseVND, 'VND');
@@ -452,6 +459,19 @@
             summaryExpenseIdrEl.textContent = formatCurrency(totalExpenseIDR, 'IDR');
             summaryDaysEl.textContent = dayCount;
             summaryRateEl.textContent = exchangeRate.toFixed(4);
+            summaryAvgDailyExpenseEl.textContent = formatCurrency(avgDailyExpense, 'VND');
+            
+            let topExpensesHTML = '<ul class="text-left text-sm space-y-1 mt-2">';
+            if (topExpenses.length > 0) {
+                topExpenses.forEach(exp => {
+                    topExpensesHTML += `<li class="truncate flex justify-between"><span>${exp.description}</span> <span class="font-semibold text-red-400">${formatCurrency(exp.amountVND, 'VND')}</span></li>`;
+                });
+            } else {
+                topExpensesHTML += '<li class="text-center text-slate-400">No expenses found.</li>';
+            }
+            topExpensesHTML += '</ul>';
+            summaryTopExpensesEl.innerHTML = topExpensesHTML;
+
 
              tableFoot.innerHTML = `
                 <tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Income (VND)</td><td class="px-6 py-3 text-right text-sm text-green-400">${formatCurrency(totalIncomeVND, 'VND')}</td><td colspan="2"></td></tr>
