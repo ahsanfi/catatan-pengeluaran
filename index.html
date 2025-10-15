@@ -24,7 +24,6 @@
         .sortable:hover { color: #f1f5f9; }
         .calendar-day { min-height: 6rem; }
         .calendar-day:hover { background-color: #334155; }
-        .quick-filter-btn.active { background-color: #3b82f6; color: white; }
     </style>
 </head>
 <body class="bg-slate-900 min-h-screen p-2 sm:p-4 text-slate-300">
@@ -86,20 +85,12 @@
             <!-- Transactions View -->
             <div id="view-transactions" class="tab-view hidden">
                 <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-700 mb-6">
-                    <div class="flex flex-wrap items-center justify-between mb-4">
-                        <h3 class="font-semibold text-slate-200">Filter Transactions</h3>
-                        <div class="flex space-x-2 mt-2 sm:mt-0">
-                            <button class="quick-filter-btn text-xs px-3 py-1 bg-slate-600 hover:bg-slate-500 rounded-full" data-period="today">Today</button>
-                            <button class="quick-filter-btn text-xs px-3 py-1 bg-slate-600 hover:bg-slate-500 rounded-full" data-period="week">This Week</button>
-                            <button class="quick-filter-btn text-xs px-3 py-1 bg-slate-600 hover:bg-slate-500 rounded-full" data-period="month">This Month</button>
-                            <button id="reset-filters-btn" class="text-xs px-3 py-1 bg-red-600 hover:bg-red-500 rounded-full">Reset</button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end">
+                    <h3 class="font-semibold text-slate-200 mb-3">Filter Transactions</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
                         <div><label for="filter-start-date" class="block text-sm font-medium text-slate-300 mb-1">From Date</label><input type="date" id="filter-start-date" class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"></div>
                         <div><label for="filter-end-date" class="block text-sm font-medium text-slate-300 mb-1">To Date</label><input type="date" id="filter-end-date" class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"></div>
                         <div><label for="filter-category" class="block text-sm font-medium text-slate-300 mb-1">Category</label><select id="filter-category" class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"></select></div>
-                        <div class="sm:col-span-2 md:col-span-3"><label for="filter-search" class="block text-sm font-medium text-slate-300 mb-1">Search Description</label><input type="text" id="filter-search" placeholder="Search transactions..." class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500"></div>
+                        <div class="sm:col-span-2 md:col-span-4"><label for="filter-search" class="block text-sm font-medium text-slate-300 mb-1">Search Description</label><input type="text" id="filter-search" placeholder="Search transactions..." class="filter-input w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500"></div>
                     </div>
                 </div>
                 <div id="status-message-trans" class="text-center min-h-[40px] flex items-center justify-center"></div>
@@ -180,10 +171,52 @@
     </div>
 
     <!-- Modals -->
-    <div id="pin-modal" class="hidden fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">...</div>
-    <div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">...</div>
-    <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">...</div>
-    <div id="calendar-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">...</div>
+    <div id="pin-modal" class="hidden fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-sm border border-slate-700 text-center">
+            <h2 class="text-2xl font-bold text-slate-100 mb-4">Restricted Access</h2>
+            <p class="text-slate-400 mb-6">Please enter your PIN.</p>
+            <form id="pin-form"><input type="password" id="pin-input" class="w-full text-center text-2xl tracking-[.5em] px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200" maxlength="4" required autocomplete="off"><p id="pin-error" class="text-red-400 text-sm mt-2 min-h-[20px]"></p><button type="submit" class="w-full mt-6 bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Enter</button></form>
+        </div>
+    </div>
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-700 rounded-lg shadow-xl p-6 w-full max-w-lg border border-slate-600">
+            <h3 class="text-lg font-bold text-slate-100 mb-4">Edit Transaction</h3>
+            <form id="edit-entry-form" class="space-y-4">
+                <div><label for="edit-description" class="block text-sm font-medium text-slate-300 mb-1">Description</label><input type="text" id="edit-description" class="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md shadow-sm text-slate-200" required></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label for="edit-date" class="block text-sm font-medium text-slate-300 mb-1">Date</label><input type="date" id="edit-date" class="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md shadow-sm text-slate-200" required></div>
+                    <div><label for="edit-amount" class="block text-sm font-medium text-slate-300 mb-1">Amount (VND)</label><input type="number" id="edit-amount" class="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md shadow-sm text-slate-200" required></div>
+                </div>
+                <div>
+                    <label for="edit-category" class="block text-sm font-medium text-slate-300 mb-1">Category</label>
+                    <select id="edit-category" class="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md shadow-sm text-slate-200">
+                        <option>Income</option><option>Food & Drink</option><option>Transportation</option><option>Groceries</option><option>Shopping</option><option>Communication</option><option>Miscellaneous</option><option value="Other">Other...</option>
+                    </select>
+                    <input type="text" id="edit-other-category-input" placeholder="New category" class="hidden w-full mt-2 px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-200 placeholder-slate-400">
+                </div>
+                <div class="flex justify-end gap-4 pt-4">
+                    <button type="button" id="cancel-edit-btn" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white font-semibold rounded-md transition">Cancel</button>
+                    <button type="submit" id="confirm-edit-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-700 rounded-lg shadow-xl p-6 w-full max-w-sm border border-slate-600">
+            <h3 class="text-lg font-bold text-slate-100 mb-2">Confirm Deletion</h3><p class="text-slate-300 mb-6">Are you sure? This action cannot be undone.</p>
+            <div id="delete-modal-item" class="text-sm bg-slate-800 p-3 rounded-md mb-6 border border-slate-600"></div>
+            <div class="flex justify-end gap-4"><button id="cancel-delete-btn" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white font-semibold rounded-md">Cancel</button><button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md">Delete</button></div>
+        </div>
+    </div>
+    <div id="calendar-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-700 rounded-lg shadow-xl p-6 w-full max-w-md border border-slate-600">
+            <div class="flex justify-between items-center mb-4">
+                 <h3 id="calendar-detail-title" class="text-lg font-bold text-slate-100">Transactions</h3>
+                 <button id="close-calendar-detail-btn" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+            <div id="calendar-detail-content" class="text-sm space-y-2 max-h-80 overflow-y-auto"></div>
+        </div>
+    </div>
     <div id="toast" class="hidden fixed bottom-5 right-5 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300"><p id="toast-message"></p></div>
 
     <script>
@@ -251,64 +284,21 @@
         const closeCalendarDetailBtn = document.getElementById('close-calendar-detail-btn');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
-        const quickFilterBtns = document.querySelectorAll('.quick-filter-btn');
-        const resetFiltersBtn = document.getElementById('reset-filters-btn');
         
         entryDateInput.valueAsDate = new Date();
 
         // --- MAIN FUNCTIONS ---
+        // (Authentication and Data Fetching are mostly unchanged)
         function showApp() { pinModal.classList.add('hidden'); mainContent.classList.remove('hidden'); fetchData(); }
         function handlePinSubmit(event) { event.preventDefault(); if (pinInput.value === CORRECT_PIN) { sessionStorage.setItem('isAuthenticated', 'true'); showApp(); } else { pinError.textContent = "Incorrect PIN. Please try again."; pinInput.value = ''; } }
         async function fetchData() { setLoadingState(true, 'trans'); setLoadingState(true, 'daily'); const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values`; try { const [incomeRes, expenseRes, rateRes] = await Promise.all([ fetch(`${baseUrl}/${INCOME_SHEET_NAME}!${DATA_RANGE}?key=${API_KEY}`), fetch(`${baseUrl}/${EXPENSE_SHEET_NAME}!${DATA_RANGE}?key=${API_KEY}`), fetch(`${baseUrl}/${SUMMARY_SHEET_NAME}!${RATE_CELL}?key=${API_KEY}`) ]); const [incomeJson, expenseJson, rateJson] = await Promise.all([ incomeRes.json(), expenseRes.json(), rateRes.json() ]); if (!incomeRes.ok) throw new Error(`Income Sheet: ${incomeJson.error.message}`); if (!expenseRes.ok) throw new Error(`Expenses Sheet: ${expenseJson.error.message}`); if (!rateRes.ok) throw new Error(`Rate (Summary Sheet): ${rateJson.error.message}`); exchangeRate = parseFloat((rateJson.values[0][0] || '0').replace(/,/g, '')) || 0; processAndStoreData(incomeJson.values, expenseJson.values); populateCategoryFilter(); applyFilters(); } catch (error) { showError(error.message, 'trans'); } finally { setLoadingState(false, 'trans'); setLoadingState(false, 'daily'); } }
         function processAndStoreData(incomeRows, expenseRows) { masterData = []; if (incomeRows) { incomeRows.forEach(row => { if(!row[0]) return; const amountVND = parseFloat((row[3] || '0').replace(/,/g, '')); const amountIDR = parseFloat((row[4] || '0').replace(/,/g, '')); masterData.push({ type: 'income', date: row[0], description: row[1], category: row[2] || 'Uncategorized', amountVND, amountIDR }); }); } if (expenseRows) { expenseRows.forEach(row => { if(!row[0]) return; const amountVND = parseFloat((row[3] || '0').replace(/,/g, '')); const amountIDR = parseFloat((row[4] || '0').replace(/,/g, '')); masterData.push({ type: 'expense', date: row[0], description: row[1], category: row[2] || 'Uncategorized', amountVND: Math.abs(amountVND), amountIDR: Math.abs(amountIDR) }); }); } }
-        
-        function applyFilters() {
-            const startDate = document.getElementById('filter-start-date').value;
-            const endDate = document.getElementById('filter-end-date').value;
-            const category = categoryFilter.value;
-            const searchTerm = document.getElementById('filter-search').value.toLowerCase();
-            let filteredData = masterData.filter(item => { if (startDate && new Date(item.date) < new Date(startDate)) return false; if (endDate && new Date(item.date) > new Date(endDate)) return false; if (category && category !== 'all' && item.category !== category) return false; if (searchTerm && !item.description.toLowerCase().includes(searchTerm)) return false; return true; });
-            sortData(filteredData, transSortState);
-            renderAll(filteredData);
-        }
-
-        function setFilterDates(period) {
-            const today = new Date();
-            const toDate = date => date.toISOString().slice(0, 10);
-            
-            let start, end = toDate(today);
-
-            if (period === 'today') {
-                start = end;
-            } else if (period === 'week') {
-                const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
-                start = toDate(firstDayOfWeek);
-            } else if (period === 'month') {
-                const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                start = toDate(firstDayOfMonth);
-            }
-            document.getElementById('filter-start-date').value = start;
-            document.getElementById('filter-end-date').value = end;
-
-            quickFilterBtns.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.period === period);
-            });
-            applyFilters();
-        }
-
-        function resetFilters() {
-            document.getElementById('filter-start-date').value = '';
-            document.getElementById('filter-end-date').value = '';
-            categoryFilter.value = 'all';
-            document.getElementById('filter-search').value = '';
-            quickFilterBtns.forEach(btn => btn.classList.remove('active'));
-            applyFilters();
-        }
-
-        // --- RENDER FUNCTIONS ---
-        // (Other render functions are mostly unchanged)
+        function applyFilters() { const startDate = document.getElementById('filter-start-date').value; const endDate = document.getElementById('filter-end-date').value; const category = categoryFilter.value; const searchTerm = document.getElementById('filter-search').value.toLowerCase(); let filteredData = masterData.filter(item => { if (startDate && new Date(item.date) < new Date(startDate)) return false; if (endDate && new Date(item.date) > new Date(endDate)) return false; if (category && category !== 'all' && item.category !== category) return false; if (searchTerm && !item.description.toLowerCase().includes(searchTerm)) return false; return true; }); sortData(filteredData, transSortState); renderAll(filteredData); }
         function sortData(data, state) { data.sort((a, b) => { const aVal = state.key === 'date' ? new Date(a.date) : a[state.key]; const bVal = state.key === 'date' ? new Date(b.date) : b[state.key]; if (aVal < bVal) return state.order === 'asc' ? -1 : 1; if (aVal > bVal) return state.order === 'asc' ? 1 : -1; return 0; }); }
         function renderAll(data) { renderTable(data); updateSummaryCards(data); updatePieChart(data); renderDailySummary(data); renderCalendar(data); updateSortIndicators(transThead, transSortState); }
+
+        // --- RENDER FUNCTIONS ---
+        // ... (renderTable, renderDailySummary, renderCalendar, updateSummaryCards, updatePieChart, populateCategoryFilter, updateSortIndicators, switchTab are unchanged)
         function renderTable(data) { tableBody.innerHTML = ''; if (data.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500">No matching transactions found.</td></tr>`; tableFoot.innerHTML = ''; return; } data.forEach(item => { const tr = document.createElement('tr'); tr.className = 'hover:bg-slate-700'; const colorClass = item.type === 'income' ? 'text-green-400' : 'text-red-400'; tr.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${item.date || '-'}</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-100">${item.description || '-'}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${item.category || '-'}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right ${colorClass}">${item.amountVND ? formatCurrency(item.amountVND, 'VND') : '-'}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right ${colorClass}">${item.amountIDR ? formatCurrency(item.amountIDR, 'IDR') : '-'}</td><td class="px-2 py-4 whitespace-nowrap text-center text-sm flex justify-center items-center space-x-2"><button class="edit-btn text-slate-500 hover:text-blue-400 p-1" title="Edit" data-item='${encodeURIComponent(JSON.stringify(item))}'><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></button><button class="delete-btn text-slate-500 hover:text-red-400 p-1" title="Delete" data-item='${encodeURIComponent(JSON.stringify(item))}'><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button></td>`; tableBody.appendChild(tr); }); }
         function renderDailySummary(data) { let dailyTotals = data.filter(item => item.type === 'expense').reduce((acc, item) => { const date = item.date; if (!acc[date]) { acc[date] = { date: date, totalVND: 0, totalIDR: 0 }; } acc[date].totalVND += item.amountVND; acc[date].totalIDR += item.amountIDR; return acc; }, {}); let dailyArray = Object.values(dailyTotals); sortData(dailyArray, dailySortState); dailySummaryBody.innerHTML = ''; if (dailyArray.length === 0) { dailySummaryBody.innerHTML = `<tr><td colspan="3" class="px-6 py-12 text-center text-slate-500">No expenses to display.</td></tr>`; return; } dailyArray.forEach(day => { const tr = document.createElement('tr'); tr.className = 'hover:bg-slate-700'; tr.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-100">${day.date}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-400">${formatCurrency(day.totalVND, 'VND')}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-400">${formatCurrency(day.totalIDR, 'IDR')}</td>`; dailySummaryBody.appendChild(tr); }); updateSortIndicators(dailyThead, dailySortState); }
         function renderCalendar(data) { calendarGrid.innerHTML = ''; const year = calendarDate.getFullYear(); const month = calendarDate.getMonth(); calendarHeader.textContent = `${calendarDate.toLocaleString('en-US', { month: 'long' })} ${year}`; const firstDayOfMonth = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate(); const dailyTotals = data.reduce((acc, item) => { const date = item.date; if (!acc[date]) acc[date] = { income: 0, expense: 0, transactions: [] }; if(item.type === 'income') { acc[date].income += item.amountVND; } else { acc[date].expense += item.amountVND; } acc[date].transactions.push(item); return acc; }, {}); for (let i = 0; i < firstDayOfMonth; i++) { calendarGrid.appendChild(document.createElement('div')); } for (let day = 1; day <= daysInMonth; day++) { const dayEl = document.createElement('div'); dayEl.className = 'calendar-day p-2 border border-slate-700 rounded-md flex flex-col items-start'; const dayNumber = document.createElement('span'); dayNumber.textContent = day; dayNumber.className = "text-sm text-slate-400"; dayEl.appendChild(dayNumber); const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`; if (dailyTotals[dateStr]) { dayEl.classList.add('cursor-pointer'); if (dailyTotals[dateStr].income > 0) { const incomeLabel = document.createElement('span'); incomeLabel.className = "mt-1 text-xs bg-green-500/50 text-green-300 rounded px-1"; incomeLabel.textContent = formatCurrency(dailyTotals[dateStr].income, 'VND'); dayEl.appendChild(incomeLabel); } if (dailyTotals[dateStr].expense > 0) { const expenseLabel = document.createElement('span'); expenseLabel.className = "mt-1 text-xs bg-red-500/50 text-red-300 rounded px-1"; expenseLabel.textContent = formatCurrency(dailyTotals[dateStr].expense, 'VND'); dayEl.appendChild(expenseLabel); } dayEl.addEventListener('click', () => showCalendarDetailModal(dateStr, dailyTotals[dateStr].transactions)); } calendarGrid.appendChild(dayEl); } }
@@ -317,9 +307,6 @@
         function populateCategoryFilter() { const categories = [...new Set(masterData.map(item => item.category))]; categoryFilter.innerHTML = '<option value="all">All Categories</option>'; categories.sort().forEach(cat => { const option = document.createElement('option'); option.value = cat; option.textContent = cat; categoryFilter.appendChild(option); }); }
         function updateSortIndicators(theadEl, state) { theadEl.querySelectorAll('.sort-indicator').forEach(el => el.textContent = ''); const activeHeader = theadEl.querySelector(`[data-sort="${state.key}"]`); if (activeHeader) { activeHeader.querySelector('.sort-indicator').textContent = state.order === 'desc' ? ' ▼' : ' ▲'; } }
         function switchTab(targetId) { tabViews.forEach(view => view.classList.add('hidden')); document.getElementById(targetId).classList.remove('hidden'); tabButtons.forEach(btn => btn.classList.remove('tab-active', 'text-white')); tabButtons.forEach(btn => btn.classList.add('text-slate-400')); const activeBtn = document.getElementById(`tab-${targetId.split('-')[1]}`); activeBtn.classList.add('tab-active', 'text-white'); activeBtn.classList.remove('text-slate-400'); }
-        
-        // --- ACTION HANDLERS (Add, Edit, Delete) & Modals ---
-        // ... (These functions are unchanged but included for completeness)
         function handleFormSubmit(event) { event.preventDefault(); const entryType = document.querySelector('input[name="entry-type"]:checked').value; const amount = parseFloat(document.getElementById('entry-amount').value); const sheetName = entryType === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME; let category = categorySelect.value; if (category === 'Other') { category = otherCategoryInput.value.trim(); if (!category) { showFormStatus('Please enter a new category.', 'error'); return; } } const payload = { action: 'add', sheetName: sheetName, date: document.getElementById('entry-date').value, description: document.getElementById('entry-description').value, category: category, amount: entryType === 'expense' ? -Math.abs(amount) : Math.abs(amount) }; setFormLoading(true); fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => res.json()).then(data => { if (data.status === 'success') { showFormStatus('Transaction saved! Reloading...', 'success'); addEntryForm.reset(); entryDateInput.valueAsDate = new Date(); otherCategoryInput.classList.add('hidden'); setTimeout(() => { fetchData(); showFormStatus('', 'success'); switchTab('view-transactions'); }, 1500); } else { throw new Error(data.message); } }).catch(error => { showFormStatus(`Failed: ${error.message}`, 'error'); }).finally(() => { setFormLoading(false); }); }
         function handleConfirmDelete() { if (!itemToDelete) return; const btn = confirmDeleteBtn; const originalText = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<div class="loader mx-auto"></div>`; const sheetName = itemToDelete.type === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME; const payload = { action: 'delete', sheetName: sheetName, originalData: itemToDelete }; fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => res.json()).then(data => { if (data.status === 'success') { closeDeleteModal(); setTimeout(() => fetchData(), 1500); } else { throw new Error(data.message); } }).catch(error => { showToast(`Failed to delete: ${error.message}`); }).finally(() => { btn.disabled = false; btn.innerHTML = originalText; }); }
         function handleEditFormSubmit(event) { event.preventDefault(); if (!itemToEdit) return; const btn = document.getElementById('confirm-edit-btn'); const originalText = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<div class="loader mx-auto"></div>`; const sheetName = itemToEdit.type === 'income' ? INCOME_SHEET_NAME : EXPENSE_SHEET_NAME; let category = document.getElementById('edit-category').value; if (category === 'Other') { category = document.getElementById('edit-other-category-input').value.trim(); } const newAmount = parseFloat(document.getElementById('edit-amount').value); const payload = { action: 'edit', sheetName: sheetName, originalData: itemToEdit, newData: { date: document.getElementById('edit-date').value, description: document.getElementById('edit-description').value, category: category, amount: itemToEdit.type === 'expense' ? -Math.abs(newAmount) : Math.abs(newAmount) } }; fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => res.json()).then(data => { if (data.status === 'success') { closeEditModal(); setTimeout(() => fetchData(), 1500); } else { throw new Error(data.message); } }).catch(error => { showToast(`Failed to edit: ${error.message}`); }).finally(() => { btn.disabled = false; btn.innerHTML = originalText; }); }
@@ -329,7 +316,7 @@
         function closeEditModal() { itemToEdit = null; editModal.classList.add('hidden'); }
         function showCalendarDetailModal(date, transactions) { calendarDetailTitle.textContent = `Transactions for ${date}`; calendarDetailContent.innerHTML = ''; if (transactions.length === 0) { calendarDetailContent.innerHTML = `<p class="text-slate-400">No transactions for this day.</p>`; } else { transactions.sort((a,b) => b.amountVND - a.amountVND).forEach(item => { const itemEl = document.createElement('div'); itemEl.className = 'flex justify-between items-center border-b border-slate-600 pb-1'; const colorClass = item.type === 'income' ? 'text-green-400' : 'text-red-400'; itemEl.innerHTML = `<span class="text-slate-200">${item.description}</span><span class="font-semibold ${colorClass}">${formatCurrency(item.amountVND, 'VND')}</span>`; calendarDetailContent.appendChild(itemEl); }); } calendarDetailModal.classList.remove('hidden'); }
         
-        // --- HELPER FUNCTIONS ---
+        // --- Helper Functions ---
         function setLoadingState(isLoading, view) { const el = document.getElementById(`status-message-${view}`); if(el) el.innerHTML = isLoading ? `<div class="flex items-center justify-center gap-2"><div class="loader"></div><p class="text-slate-400">Loading data...</p></div>` : ''; }
         function setFormLoading(isLoading) { const btn = document.getElementById('submit-entry-button'); btn.disabled = isLoading; if (isLoading) { btn.classList.add('opacity-50'); btn.innerHTML = `<div class="loader mx-auto"></div>`; } else { btn.classList.remove('opacity-50'); btn.textContent = 'Save Transaction'; } }
         function showFormStatus(message, type) { formStatus.textContent = message; formStatus.className = `text-center mt-4 min-h-[20px] text-sm font-medium ${type === 'success' ? 'text-green-400' : 'text-red-400'}`; }
@@ -356,8 +343,6 @@
         prevMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() - 1); applyFilters(); });
         nextMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); applyFilters(); });
         closeCalendarDetailBtn.addEventListener('click', () => calendarDetailModal.classList.add('hidden'));
-        resetFiltersBtn.addEventListener('click', resetFilters);
-        quickFilterBtns.forEach(btn => btn.addEventListener('click', () => setFilterDates(btn.dataset.period)));
 
     </script>
 </body>
