@@ -86,6 +86,8 @@
                         <div class="relative h-64 md:h-72">
                            <canvas id="expense-pie-chart"></canvas>
                         </div>
+                        <div id="expense-category-details" class="mt-6 space-y-2 border-t border-slate-600 pt-4">
+                            </div>
                     </div>
                 </div>
             </div>
@@ -288,7 +290,7 @@
         const closeCalendarDetailBtn = document.getElementById('close-calendar-detail-btn');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
-        const updateWalletForm = document.getElementById('update-wallet-form'); // New wallet elements
+        const updateWalletForm = document.getElementById('update-wallet-form');
         const walletInput = document.getElementById('wallet-input');
         const walletStatusMessage = document.getElementById('wallet-status-message');
         
@@ -343,7 +345,6 @@
                     masterData.push({ type: 'expense', date: row[0], description: row[1], category: row[2] || 'Uncategorized', amountVND: Math.abs(amountVND), amountIDR: Math.abs(amountIDR) }); 
                 }); 
             }
-            // Pass walletValue to be used in rendering
             masterData.walletValue = walletValue;
         }
         function applyFilters() { const startDate = document.getElementById('filter-start-date').value; const endDate = document.getElementById('filter-end-date').value; const category = categoryFilter.value; const searchTerm = document.getElementById('filter-search').value.toLowerCase(); let filteredData = masterData.filter(item => { if (startDate && new Date(item.date) < new Date(startDate)) return false; if (endDate && new Date(item.date) > new Date(endDate)) return false; if (category && category !== 'all' && item.category !== category) return false; if (searchTerm && !item.description.toLowerCase().includes(searchTerm)) return false; return true; }); sortData(filteredData, transSortState); renderAll(filteredData); }
@@ -401,7 +402,72 @@
             summaryTopExpensesEl.innerHTML = topExpensesHTML; 
             tableFoot.innerHTML = `<tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Income (VND)</td><td class="px-6 py-3 text-right text-sm text-green-400">${formatCurrency(totalIncomeVND, 'VND')}</td><td colspan="2"></td></tr><tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Expenses (VND)</td><td class="px-6 py-3 text-right text-sm text-red-400">${formatCurrency(totalExpenseVND, 'VND')}</td><td colspan="2"></td></tr><tr><td colspan="3" class="px-6 py-4 text-right font-bold text-slate-100">FINAL BALANCE (VND)</td><td class="px-6 py-4 text-right font-bold ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}">${formatCurrency(finalBalanceVND, 'VND')}</td><td colspan="2"></td></tr>`; 
         }
-        function updatePieChart(data) { const expenseData = data.filter(item => item.type === 'expense'); const categoryTotals = expenseData.reduce((acc, item) => { acc[item.category] = (acc[item.category] || 0) + item.amountVND; return acc; }, {}); const labels = Object.keys(categoryTotals); const values = Object.values(categoryTotals); const colors = ['#f87171', '#fb923c', '#facc15', '#a3e635', '#4ade80', '#38bdf8', '#818cf8', '#c084fc']; const chartData = { labels: labels, datasets: [{ label: 'Expenses VND', data: values, backgroundColor: colors, borderColor: '#1e293b', hoverOffset: 4 }] }; const ctx = document.getElementById('expense-pie-chart').getContext('2d'); if(expenseChart) { expenseChart.destroy(); } expenseChart = new Chart(ctx, { type: 'pie', data: chartData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } } } } }); }
+        function updatePieChart(data) {
+            const expenseData = data.filter(item => item.type === 'expense');
+            const categoryTotals = expenseData.reduce((acc, item) => {
+                acc[item.category] = (acc[item.category] || 0) + item.amountVND;
+                return acc;
+            }, {});
+
+            const sortedCategories = Object.entries(categoryTotals).sort(([, a], [, b]) => b - a);
+            
+            const labels = sortedCategories.map(item => item[0]);
+            const values = sortedCategories.map(item => item[1]);
+            const colors = ['#f87171', '#fb923c', '#facc15', '#a3e635', '#4ade80', '#38bdf8', '#818cf8', '#c084fc', '#f472b6', '#94a3b8'];
+            
+            const chartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Expenses VND',
+                    data: values,
+                    backgroundColor: colors,
+                    borderColor: '#1e293b',
+                    hoverOffset: 4
+                }]
+            };
+            const ctx = document.getElementById('expense-pie-chart').getContext('2d');
+            if (expenseChart) {
+                expenseChart.destroy();
+            }
+            expenseChart = new Chart(ctx, {
+                type: 'pie',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false // Hide default legend as we are creating a custom one
+                        }
+                    }
+                }
+            });
+
+            // NEW: Add custom details list below chart
+            const detailsContainer = document.getElementById('expense-category-details');
+            detailsContainer.innerHTML = ''; // Clear previous details
+
+            if (labels.length === 0) {
+                 detailsContainer.innerHTML = '<p class="text-center text-slate-500 text-sm">No expense data to display.</p>';
+            } else {
+                labels.forEach((label, index) => {
+                    const detailEl = document.createElement('div');
+                    detailEl.className = 'flex justify-between items-center text-sm py-1';
+                    
+                    const color = colors[index % colors.length];
+                    const value = values[index];
+
+                    detailEl.innerHTML = `
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 rounded-full mr-3" style="background-color: ${color};"></span>
+                            <span class="text-slate-300">${label}</span>
+                        </div>
+                        <span class="font-semibold text-slate-100">${formatCurrency(value, 'VND')}</span>
+                    `;
+                    detailsContainer.appendChild(detailEl);
+                });
+            }
+        }
         function populateCategoryFilter() { const categories = [...new Set(masterData.map(item => item.category))]; categoryFilter.innerHTML = '<option value="all">All Categories</option>'; categories.sort().forEach(cat => { const option = document.createElement('option'); option.value = cat; option.textContent = cat; categoryFilter.appendChild(option); }); }
         function updateSortIndicators(theadEl, state) { theadEl.querySelectorAll('.sort-indicator').forEach(el => el.textContent = ''); const activeHeader = theadEl.querySelector(`[data-sort="${state.key}"]`); if (activeHeader) { activeHeader.querySelector('.sort-indicator').textContent = state.order === 'desc' ? ' ▼' : ' ▲'; } }
         function switchTab(targetId) { tabViews.forEach(view => view.classList.add('hidden')); document.getElementById(targetId).classList.remove('hidden'); tabButtons.forEach(btn => btn.classList.remove('tab-active', 'text-white')); tabButtons.forEach(btn => btn.classList.add('text-slate-400')); const activeBtn = document.getElementById(`tab-${targetId.split('-')[1]}`); activeBtn.classList.add('tab-active', 'text-white'); activeBtn.classList.remove('text-slate-400'); }
@@ -484,7 +550,7 @@
         prevMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() - 1); applyFilters(); });
         nextMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); applyFilters(); });
         closeCalendarDetailBtn.addEventListener('click', () => calendarDetailModal.classList.add('hidden'));
-        updateWalletForm.addEventListener('submit', handleUpdateWallet); // New event listener for wallet form
+        updateWalletForm.addEventListener('submit', handleUpdateWallet);
     </script>
 </body>
 </html>
