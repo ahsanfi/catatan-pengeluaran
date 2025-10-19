@@ -6,6 +6,7 @@
     <title>Hanoi Journey Finance Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -53,9 +54,19 @@
 
         <div id="tab-content">
             <div id="view-dashboard" class="tab-view">
+                 <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-slate-100">Dashboard Overview</h2>
+                    <button id="export-dashboard-btn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-slate-600 hover:bg-slate-500 text-slate-200 rounded-md transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Export as Image
+                    </button>
+                </div>
+
                  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2">
-                        <h2 class="text-lg font-semibold text-slate-200 mb-4">General Summary</h2>
+                        <h3 class="text-lg font-semibold text-slate-200 mb-4">General Summary</h3>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 text-center">
                            <div class="bg-slate-700/50 p-4 rounded-lg border border-cyan-500/50"><h3 class="text-xs sm:text-sm font-medium text-cyan-300 uppercase tracking-wider">Wallet (VND)</h3><p id="summary-wallet-vnd" class="text-xl sm:text-2xl font-bold text-cyan-400 mt-2">-</p></div>
                            <div class="bg-slate-700/50 p-4 rounded-lg border border-green-500/50"><h3 class="text-xs sm:text-sm font-medium text-green-300 uppercase tracking-wider">Income (VND)</h3><p id="summary-income" class="text-xl sm:text-2xl font-bold text-green-400 mt-2">-</p></div>
@@ -70,7 +81,7 @@
                         </div>
 
                         <div class="mt-8 bg-slate-700/50 p-4 sm:p-6 rounded-lg border border-slate-700">
-                            <h2 class="text-lg font-semibold text-slate-200 mb-4">Update Wallet</h2>
+                            <h3 class="text-lg font-semibold text-slate-200 mb-4">Update Wallet</h3>
                             <form id="update-wallet-form" class="flex flex-col sm:flex-row items-end gap-4">
                                 <div class="w-full sm:flex-grow">
                                     <label for="wallet-input" class="block text-sm font-medium text-slate-300 mb-1">Wallet Amount (VND)</label>
@@ -82,12 +93,12 @@
                         </div>
                     </div>
                     <div class="bg-slate-700/50 p-4 sm:p-6 rounded-lg border border-slate-700">
-                        <h2 class="text-lg font-semibold text-slate-200 mb-4">Expenses by Category</h2>
+                        <h3 class="text-lg font-semibold text-slate-200 mb-4">Expenses by Category</h3>
                         <div class="relative h-64 md:h-72">
                            <canvas id="expense-pie-chart"></canvas>
                         </div>
                         <div id="expense-category-details" class="mt-6 space-y-2 border-t border-slate-600 pt-4">
-                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -234,7 +245,7 @@
         const SUMMARY_SHEET_NAME = "Summary";
         const DATA_RANGE = 'A2:E';
         const RATE_CELL = 'E1';
-        const WALLET_CELL = 'G1'; // New constant for wallet
+        const WALLET_CELL = 'G1';
         let masterData = [], exchangeRate = 0, expenseChart = null;
         let transSortState = { key: 'date', order: 'desc' };
         let dailySortState = { key: 'date', order: 'desc' };
@@ -293,6 +304,7 @@
         const updateWalletForm = document.getElementById('update-wallet-form');
         const walletInput = document.getElementById('wallet-input');
         const walletStatusMessage = document.getElementById('wallet-status-message');
+        const exportDashboardBtn = document.getElementById('export-dashboard-btn'); // NEW export button
         
         entryDateInput.valueAsDate = new Date();
 
@@ -307,7 +319,7 @@
                     fetch(`${baseUrl}/${INCOME_SHEET_NAME}!${DATA_RANGE}?key=${API_KEY}`), 
                     fetch(`${baseUrl}/${EXPENSE_SHEET_NAME}!${DATA_RANGE}?key=${API_KEY}`), 
                     fetch(`${baseUrl}/${SUMMARY_SHEET_NAME}!${RATE_CELL}?key=${API_KEY}`),
-                    fetch(`${baseUrl}/${SUMMARY_SHEET_NAME}!${WALLET_CELL}?key=${API_KEY}`) // Fetch wallet value
+                    fetch(`${baseUrl}/${SUMMARY_SHEET_NAME}!${WALLET_CELL}?key=${API_KEY}`)
                 ]); 
                 const [incomeJson, expenseJson, rateJson, walletJson] = await Promise.all([ incomeRes.json(), expenseRes.json(), rateRes.json(), walletRes.json() ]); 
                 if (!incomeRes.ok) throw new Error(`Income Sheet: ${incomeJson.error.message}`); 
@@ -408,62 +420,23 @@
                 acc[item.category] = (acc[item.category] || 0) + item.amountVND;
                 return acc;
             }, {});
-
             const sortedCategories = Object.entries(categoryTotals).sort(([, a], [, b]) => b - a);
-            
             const labels = sortedCategories.map(item => item[0]);
             const values = sortedCategories.map(item => item[1]);
             const colors = ['#f87171', '#fb923c', '#facc15', '#a3e635', '#4ade80', '#38bdf8', '#818cf8', '#c084fc', '#f472b6', '#94a3b8'];
-            
-            const chartData = {
-                labels: labels,
-                datasets: [{
-                    label: 'Expenses VND',
-                    data: values,
-                    backgroundColor: colors,
-                    borderColor: '#1e293b',
-                    hoverOffset: 4
-                }]
-            };
+            const chartData = { labels: labels, datasets: [{ label: 'Expenses VND', data: values, backgroundColor: colors, borderColor: '#1e293b', hoverOffset: 4 }] };
             const ctx = document.getElementById('expense-pie-chart').getContext('2d');
-            if (expenseChart) {
-                expenseChart.destroy();
-            }
-            expenseChart = new Chart(ctx, {
-                type: 'pie',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false // Hide default legend as we are creating a custom one
-                        }
-                    }
-                }
-            });
-
-            // NEW: Add custom details list below chart
+            if (expenseChart) { expenseChart.destroy(); }
+            expenseChart = new Chart(ctx, { type: 'pie', data: chartData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
             const detailsContainer = document.getElementById('expense-category-details');
-            detailsContainer.innerHTML = ''; // Clear previous details
-
-            if (labels.length === 0) {
-                 detailsContainer.innerHTML = '<p class="text-center text-slate-500 text-sm">No expense data to display.</p>';
-            } else {
+            detailsContainer.innerHTML = '';
+            if (labels.length === 0) { detailsContainer.innerHTML = '<p class="text-center text-slate-500 text-sm">No expense data to display.</p>'; } else {
                 labels.forEach((label, index) => {
                     const detailEl = document.createElement('div');
                     detailEl.className = 'flex justify-between items-center text-sm py-1';
-                    
                     const color = colors[index % colors.length];
                     const value = values[index];
-
-                    detailEl.innerHTML = `
-                        <div class="flex items-center">
-                            <span class="w-3 h-3 rounded-full mr-3" style="background-color: ${color};"></span>
-                            <span class="text-slate-300">${label}</span>
-                        </div>
-                        <span class="font-semibold text-slate-100">${formatCurrency(value, 'VND')}</span>
-                    `;
+                    detailEl.innerHTML = `<div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3" style="background-color: ${color};"></span><span class="text-slate-300">${label}</span></div><span class="font-semibold text-slate-100">${formatCurrency(value, 'VND')}</span>`;
                     detailsContainer.appendChild(detailEl);
                 });
             }
@@ -496,30 +469,54 @@
                 btn.innerHTML = originalText;
                 return;
             }
-
             const payload = { action: 'updateWallet', value: newValue };
-
             try {
                 const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const data = await response.json();
                 if (data.status === 'success') {
                     walletStatusMessage.textContent = 'Wallet updated successfully! Refreshing...';
                     walletStatusMessage.className = 'text-center mt-3 min-h-[20px] text-sm font-medium text-green-400';
-                    setTimeout(() => {
-                        fetchData();
-                        walletStatusMessage.textContent = '';
-                    }, 1500);
-                } else {
-                    throw new Error(data.message);
-                }
+                    setTimeout(() => { fetchData(); walletStatusMessage.textContent = ''; }, 1500);
+                } else { throw new Error(data.message); }
             } catch (error) {
                 walletStatusMessage.textContent = `Error: ${error.message}`;
                 walletStatusMessage.className = 'text-center mt-3 min-h-[20px] text-sm font-medium text-red-400';
             } finally {
-                setTimeout(() => {
-                   btn.disabled = false;
-                   btn.innerHTML = originalText;
-                }, 1500);
+                setTimeout(() => { btn.disabled = false; btn.innerHTML = originalText; }, 1500);
+            }
+        }
+        
+        // --- NEW FUNCTION: Export Dashboard as Image ---
+        async function exportDashboardAsImage() {
+            const btn = document.getElementById('export-dashboard-btn');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `Exporting...`;
+
+            const dashboardElement = document.getElementById('view-dashboard');
+            
+            try {
+                // Use html2canvas to capture the element
+                const canvas = await html2canvas(dashboardElement, {
+                    scale: 2, // Higher scale for better resolution
+                    backgroundColor: '#1e293b' // Match the theme background for a clean export
+                });
+                
+                // Create a temporary link to trigger the download
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = `Hanoi_Finance_Dashboard_${new Date().toISOString().slice(0, 10)}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+            } catch (error) {
+                console.error('Export failed:', error);
+                showToast('Failed to export image.');
+            } finally {
+                // Restore the button to its original state
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
             }
         }
 
@@ -551,6 +548,7 @@
         nextMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); applyFilters(); });
         closeCalendarDetailBtn.addEventListener('click', () => calendarDetailModal.classList.add('hidden'));
         updateWalletForm.addEventListener('submit', handleUpdateWallet);
+        exportDashboardBtn.addEventListener('click', exportDashboardAsImage); // NEW Event Listener for export
     </script>
 </body>
 </html>
