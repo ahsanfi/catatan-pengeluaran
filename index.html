@@ -30,16 +30,24 @@
 
     <div id="main-content" class="hidden bg-slate-800 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-7xl mx-auto border border-slate-700">
 
-        <div class="flex justify-between items-center mb-8">
+        <div class="flex justify-between items-start mb-8">
             <div class="text-left">
                 <h1 class="text-2xl sm:text-3xl font-bold text-slate-100">Hanoi Journey Finance</h1>
                 <p class="text-slate-400 mt-1 text-sm sm:text-base">A summary of your financial activity.</p>
             </div>
-            <button id="logout-btn" title="Logout" class="p-2 rounded-full hover:bg-slate-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-            </button>
+            <div class="flex items-center gap-2">
+                 <button id="export-dashboard-btn" title="Export Dashboard as Image" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span class="hidden sm:inline">Export</span>
+                </button>
+                <button id="logout-btn" title="Logout" class="p-2 rounded-full hover:bg-slate-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
 
         <div class="mb-6 border-b border-slate-700">
@@ -54,16 +62,6 @@
 
         <div id="tab-content">
             <div id="view-dashboard" class="tab-view">
-                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold text-slate-100">Dashboard Overview</h2>
-                    <button id="export-dashboard-btn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-slate-600 hover:bg-slate-500 text-slate-200 rounded-md transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Export as Image
-                    </button>
-                </div>
-
                  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2">
                         <h3 class="text-lg font-semibold text-slate-200 mb-4">General Summary</h3>
@@ -304,7 +302,7 @@
         const updateWalletForm = document.getElementById('update-wallet-form');
         const walletInput = document.getElementById('wallet-input');
         const walletStatusMessage = document.getElementById('wallet-status-message');
-        const exportDashboardBtn = document.getElementById('export-dashboard-btn'); // NEW export button
+        const exportDashboardBtn = document.getElementById('export-dashboard-btn');
         
         entryDateInput.valueAsDate = new Date();
 
@@ -427,7 +425,29 @@
             const chartData = { labels: labels, datasets: [{ label: 'Expenses VND', data: values, backgroundColor: colors, borderColor: '#1e293b', hoverOffset: 4 }] };
             const ctx = document.getElementById('expense-pie-chart').getContext('2d');
             if (expenseChart) { expenseChart.destroy(); }
-            expenseChart = new Chart(ctx, { type: 'pie', data: chartData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+            expenseChart = new Chart(ctx, {
+                type: 'pie',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { // MODIFIED: Custom tooltip configuration
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw;
+                                    const data = context.chart.data.datasets[0].data;
+                                    const total = data.reduce((acc, current) => acc + current, 0);
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+                                    return `${label}: ${formatCurrency(value, 'VND')} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
             const detailsContainer = document.getElementById('expense-category-details');
             detailsContainer.innerHTML = '';
             if (labels.length === 0) { detailsContainer.innerHTML = '<p class="text-center text-slate-500 text-sm">No expense data to display.</p>'; } else {
@@ -486,23 +506,20 @@
             }
         }
         
-        // --- NEW FUNCTION: Export Dashboard as Image ---
         async function exportDashboardAsImage() {
             const btn = document.getElementById('export-dashboard-btn');
             const originalHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `Exporting...`;
+            btn.innerHTML = `<div class="loader mx-auto"></div>`;
 
             const dashboardElement = document.getElementById('view-dashboard');
             
             try {
-                // Use html2canvas to capture the element
                 const canvas = await html2canvas(dashboardElement, {
-                    scale: 2, // Higher scale for better resolution
-                    backgroundColor: '#1e293b' // Match the theme background for a clean export
+                    scale: 2,
+                    backgroundColor: '#1e293b'
                 });
                 
-                // Create a temporary link to trigger the download
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL('image/png');
                 link.download = `Hanoi_Finance_Dashboard_${new Date().toISOString().slice(0, 10)}.png`;
@@ -514,7 +531,6 @@
                 console.error('Export failed:', error);
                 showToast('Failed to export image.');
             } finally {
-                // Restore the button to its original state
                 btn.disabled = false;
                 btn.innerHTML = originalHTML;
             }
@@ -548,7 +564,7 @@
         nextMonthBtn.addEventListener('click', () => { calendarDate.setMonth(calendarDate.getMonth() + 1); applyFilters(); });
         closeCalendarDetailBtn.addEventListener('click', () => calendarDetailModal.classList.add('hidden'));
         updateWalletForm.addEventListener('submit', handleUpdateWallet);
-        exportDashboardBtn.addEventListener('click', exportDashboardAsImage); // NEW Event Listener for export
+        exportDashboardBtn.addEventListener('click', exportDashboardAsImage);
     </script>
 </body>
 </html>
