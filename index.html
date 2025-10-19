@@ -198,7 +198,7 @@
         </div>
     </div>
 
-    <div id="pin-modal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div id="pin-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-sm border border-slate-700 text-center">
             <h2 class="text-2xl font-bold text-slate-100 mb-4">Restricted Access</h2>
             <p class="text-slate-400 mb-6">Please enter your PIN to manage entries.</p>
@@ -332,7 +332,7 @@
         }
 
         async function fetchData() {
-            setLoadingState(true, 'trans'); setLoadingState(true, 'daily'); 
+            // No loading state here to keep the UI clean on first load
             const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values`; 
             try { 
                 const [incomeRes, expenseRes, rateRes, walletRes] = await Promise.all([ 
@@ -353,17 +353,15 @@
                 processAndStoreData(incomeJson.values, expenseJson.values, walletValue);
                 populateCategoryFilter(); 
                 
-                if (sessionStorage.getItem('isAuthenticated') !== 'true') {
-                    renderReadOnlyDashboard();
-                } else {
+                if (sessionStorage.getItem('isAuthenticated') === 'true') {
                     showApp();
+                } else {
+                    renderReadOnlyDashboard();
                 }
 
             } catch (error) { 
-                showError(error.message, 'trans'); 
-            } finally { 
-                setLoadingState(false, 'trans'); setLoadingState(false, 'daily'); 
-            } 
+                 document.getElementById('read-only-dashboard').innerHTML = `<p class="text-red-400 font-medium text-center p-8">${error.message}</p>`;
+            }
         }
 
         function processAndStoreData(incomeRows, expenseRows, walletValue) { 
@@ -607,7 +605,7 @@
 
         // --- EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => { 
-            fetchData(); // Fetch data immediately on load for the read-only view
+            fetchData();
         });
         pinForm.addEventListener('submit', handlePinSubmit);
         logoutBtn.addEventListener('click', () => { sessionStorage.removeItem('isAuthenticated'); window.location.reload(); });
