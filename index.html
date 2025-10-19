@@ -34,6 +34,12 @@
                 <h1 class="text-2xl sm:text-3xl font-bold text-slate-100">Hanoi Journey Finance</h1>
                 <p class="text-slate-400 mt-1 text-sm sm:text-base">A summary of financial activity.</p>
             </div>
+            <button id="show-login-btn" class="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                </svg>
+                Login to Manage
+            </button>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2">
@@ -198,7 +204,7 @@
         </div>
     </div>
 
-    <div id="pin-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div id="pin-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
         <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-sm border border-slate-700 text-center">
             <h2 class="text-2xl font-bold text-slate-100 mb-4">Restricted Access</h2>
             <p class="text-slate-400 mb-6">Please enter your PIN to manage entries.</p>
@@ -272,6 +278,7 @@
         const pinForm = document.getElementById('pin-form');
         const pinInput = document.getElementById('pin-input');
         const pinError = document.getElementById('pin-error');
+        const showLoginBtn = document.getElementById('show-login-btn'); // New login button
         const tableBody = document.getElementById('data-body');
         const tableFoot = document.getElementById('table-foot');
         const dailySummaryBody = document.getElementById('daily-summary-body');
@@ -332,7 +339,6 @@
         }
 
         async function fetchData() {
-            // No loading state here to keep the UI clean on first load
             const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values`; 
             try { 
                 const [incomeRes, expenseRes, rateRes, walletRes] = await Promise.all([ 
@@ -606,6 +612,9 @@
         // --- EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => { 
             fetchData();
+        });
+        showLoginBtn.addEventListener('click', () => {
+            pinModal.classList.remove('hidden');
         });
         pinForm.addEventListener('submit', handlePinSubmit);
         logoutBtn.addEventListener('click', () => { sessionStorage.removeItem('isAuthenticated'); window.location.reload(); });
