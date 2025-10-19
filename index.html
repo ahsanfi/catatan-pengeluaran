@@ -28,6 +28,30 @@
 </head>
 <body class="bg-slate-900 min-h-screen p-2 sm:p-4 text-slate-300">
 
+    <div id="read-only-dashboard" class="bg-slate-800 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-7xl mx-auto border border-slate-700">
+        <div class="flex justify-between items-start mb-8">
+            <div class="text-left">
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-100">Hanoi Journey Finance</h1>
+                <p class="text-slate-400 mt-1 text-sm sm:text-base">A summary of financial activity.</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2">
+                <h3 class="text-lg font-semibold text-slate-200 mb-4">General Summary</h3>
+                 <div id="summary-cards-container-readonly" class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 text-center">
+                    </div>
+            </div>
+            <div class="bg-slate-700/50 p-4 sm:p-6 rounded-lg border border-slate-700">
+                <h3 class="text-lg font-semibold text-slate-200 mb-4">Expenses by Category</h3>
+                <div class="relative h-64 md:h-72">
+                   <canvas id="expense-pie-chart-readonly"></canvas>
+                </div>
+                <div id="expense-category-details-readonly" class="mt-6 space-y-2 border-t border-slate-600 pt-4"></div>
+            </div>
+        </div>
+    </div>
+
+
     <div id="main-content" class="hidden bg-slate-800 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-7xl mx-auto border border-slate-700">
 
         <div class="flex justify-between items-start mb-8">
@@ -65,18 +89,8 @@
                  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2">
                         <h3 class="text-lg font-semibold text-slate-200 mb-4">General Summary</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 text-center">
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-cyan-500/50"><h3 class="text-xs sm:text-sm font-medium text-cyan-300 uppercase tracking-wider">Wallet (VND)</h3><p id="summary-wallet-vnd" class="text-xl sm:text-2xl font-bold text-cyan-400 mt-2">-</p></div>
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-green-500/50"><h3 class="text-xs sm:text-sm font-medium text-green-300 uppercase tracking-wider">Income (VND)</h3><p id="summary-income" class="text-xl sm:text-2xl font-bold text-green-400 mt-2">-</p></div>
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider">Expenses (VND)</h3><p id="summary-expense-vnd" class="text-xl sm:text-2xl font-bold text-red-400 mt-2">-</p></div>
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50"><h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Final Balance (VND)</h3><p id="summary-balance-vnd" class="text-xl sm:text-2xl font-bold text-blue-400 mt-2">-</p></div>
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50"><h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Final Balance (IDR)</h3><p id="summary-balance-idr" class="text-xl sm:text-2xl font-bold text-blue-400 mt-2">-</p></div>
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider">Total Expenses (IDR)</h3><p id="summary-expense-idr" class="text-xl sm:text-2xl font-bold text-red-400 mt-2">-</p></div>
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-purple-500/50"><h3 class="text-xs sm:text-sm font-medium text-purple-300 uppercase tracking-wider">Total Days</h3><p id="summary-days" class="text-xl sm:text-2xl font-bold text-purple-400 mt-2">-</p></div>
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-yellow-500/50"><h3 class="text-xs sm:text-sm font-medium text-yellow-300 uppercase tracking-wider">Avg. Daily Expense</h3><p id="summary-avg-daily-expense" class="text-xl sm:text-2xl font-bold text-yellow-400 mt-2">-</p></div>
-                           <div class="bg-slate-700/50 p-4 rounded-lg border border-amber-500/50"><h3 class="text-xs sm:text-sm font-medium text-amber-300 uppercase tracking-wider">Rate (VND to IDR)</h3><p id="summary-rate" class="text-xl sm:text-2xl font-bold text-amber-400 mt-2">-</p></div>
-                           <div class="md:col-span-3 bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider text-center">Top 3 Expenses (VND)</h3><div id="summary-top-expenses" class="mt-2 text-left"></div></div>
-                        </div>
+                        <div id="summary-cards-container-main" class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 text-center">
+                           </div>
 
                         <div class="mt-8 bg-slate-700/50 p-4 sm:p-6 rounded-lg border border-slate-700">
                             <h3 class="text-lg font-semibold text-slate-200 mb-4">Update Wallet</h3>
@@ -93,9 +107,9 @@
                     <div class="bg-slate-700/50 p-4 sm:p-6 rounded-lg border border-slate-700">
                         <h3 class="text-lg font-semibold text-slate-200 mb-4">Expenses by Category</h3>
                         <div class="relative h-64 md:h-72">
-                           <canvas id="expense-pie-chart"></canvas>
+                           <canvas id="expense-pie-chart-main"></canvas>
                         </div>
-                        <div id="expense-category-details" class="mt-6 space-y-2 border-t border-slate-600 pt-4">
+                        <div id="expense-category-details-main" class="mt-6 space-y-2 border-t border-slate-600 pt-4">
                         </div>
                     </div>
                 </div>
@@ -184,10 +198,10 @@
         </div>
     </div>
 
-    <div id="pin-modal" class="hidden fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">
+    <div id="pin-modal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-sm border border-slate-700 text-center">
             <h2 class="text-2xl font-bold text-slate-100 mb-4">Restricted Access</h2>
-            <p class="text-slate-400 mb-6">Please enter your PIN.</p>
+            <p class="text-slate-400 mb-6">Please enter your PIN to manage entries.</p>
             <form id="pin-form"><input type="password" id="pin-input" class="w-full text-center text-2xl tracking-[.5em] px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200" maxlength="4" required autocomplete="off"><p id="pin-error" class="text-red-400 text-sm mt-2 min-h-[20px]"></p><button type="submit" class="w-full mt-6 bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Enter</button></form>
         </div>
     </div>
@@ -244,28 +258,20 @@
         const DATA_RANGE = 'A2:E';
         const RATE_CELL = 'E1';
         const WALLET_CELL = 'G1';
-        let masterData = [], exchangeRate = 0, expenseChart = null;
+        let masterData = [], exchangeRate = 0;
+        let expenseChartMain = null, expenseChartReadOnly = null;
         let transSortState = { key: 'date', order: 'desc' };
         let dailySortState = { key: 'date', order: 'desc' };
         let itemToEdit = null, itemToDelete = null;
         let calendarDate = new Date();
 
         // --- DOM ELEMENTS ---
+        const readOnlyDashboard = document.getElementById('read-only-dashboard');
         const mainContent = document.getElementById('main-content');
         const pinModal = document.getElementById('pin-modal');
         const pinForm = document.getElementById('pin-form');
         const pinInput = document.getElementById('pin-input');
         const pinError = document.getElementById('pin-error');
-        const summaryWalletVndEl = document.getElementById('summary-wallet-vnd');
-        const summaryIncomeEl = document.getElementById('summary-income');
-        const summaryExpenseVndEl = document.getElementById('summary-expense-vnd');
-        const summaryBalanceVndEl = document.getElementById('summary-balance-vnd');
-        const summaryBalanceIdrEl = document.getElementById('summary-balance-idr');
-        const summaryExpenseIdrEl = document.getElementById('summary-expense-idr');
-        const summaryDaysEl = document.getElementById('summary-days');
-        const summaryRateEl = document.getElementById('summary-rate');
-        const summaryAvgDailyExpenseEl = document.getElementById('summary-avg-daily-expense');
-        const summaryTopExpensesEl = document.getElementById('summary-top-expenses');
         const tableBody = document.getElementById('data-body');
         const tableFoot = document.getElementById('table-foot');
         const dailySummaryBody = document.getElementById('daily-summary-body');
@@ -307,8 +313,24 @@
         entryDateInput.valueAsDate = new Date();
 
         // --- MAIN FUNCTIONS ---
-        function showApp() { pinModal.classList.add('hidden'); mainContent.classList.remove('hidden'); fetchData(); }
-        function handlePinSubmit(event) { event.preventDefault(); if (pinInput.value === CORRECT_PIN) { sessionStorage.setItem('isAuthenticated', 'true'); showApp(); } else { pinError.textContent = "Incorrect PIN. Please try again."; pinInput.value = ''; } }
+        function showApp() { 
+            pinModal.classList.add('hidden'); 
+            readOnlyDashboard.classList.add('hidden');
+            mainContent.classList.remove('hidden'); 
+            renderAll(masterData); // Re-render all components for the full app
+        }
+
+        function handlePinSubmit(event) { 
+            event.preventDefault(); 
+            if (pinInput.value === CORRECT_PIN) { 
+                sessionStorage.setItem('isAuthenticated', 'true'); 
+                showApp(); 
+            } else { 
+                pinError.textContent = "Incorrect PIN. Please try again."; 
+                pinInput.value = ''; 
+            } 
+        }
+
         async function fetchData() {
             setLoadingState(true, 'trans'); setLoadingState(true, 'daily'); 
             const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values`; 
@@ -330,13 +352,20 @@
                 
                 processAndStoreData(incomeJson.values, expenseJson.values, walletValue);
                 populateCategoryFilter(); 
-                applyFilters(); 
+                
+                if (sessionStorage.getItem('isAuthenticated') !== 'true') {
+                    renderReadOnlyDashboard();
+                } else {
+                    showApp();
+                }
+
             } catch (error) { 
                 showError(error.message, 'trans'); 
             } finally { 
                 setLoadingState(false, 'trans'); setLoadingState(false, 'daily'); 
             } 
         }
+
         function processAndStoreData(incomeRows, expenseRows, walletValue) { 
             masterData = []; 
             if (incomeRows) { 
@@ -357,24 +386,51 @@
             }
             masterData.walletValue = walletValue;
         }
-        function applyFilters() { const startDate = document.getElementById('filter-start-date').value; const endDate = document.getElementById('filter-end-date').value; const category = categoryFilter.value; const searchTerm = document.getElementById('filter-search').value.toLowerCase(); let filteredData = masterData.filter(item => { if (startDate && new Date(item.date) < new Date(startDate)) return false; if (endDate && new Date(item.date) > new Date(endDate)) return false; if (category && category !== 'all' && item.category !== category) return false; if (searchTerm && !item.description.toLowerCase().includes(searchTerm)) return false; return true; }); sortData(filteredData, transSortState); renderAll(filteredData); }
+
+        function applyFilters() { 
+            const startDate = document.getElementById('filter-start-date').value; 
+            const endDate = document.getElementById('filter-end-date').value; 
+            const category = categoryFilter.value; 
+            const searchTerm = document.getElementById('filter-search').value.toLowerCase(); 
+            let filteredData = masterData.filter(item => { 
+                if (startDate && new Date(item.date) < new Date(startDate)) return false; 
+                if (endDate && new Date(item.date) > new Date(endDate)) return false; 
+                if (category && category !== 'all' && item.category !== category) return false; 
+                if (searchTerm && !item.description.toLowerCase().includes(searchTerm)) return false; 
+                return true; 
+            }); 
+            sortData(filteredData, transSortState); 
+            renderAll(filteredData); 
+        }
+
         function sortData(data, state) { data.sort((a, b) => { const aVal = state.key === 'date' ? new Date(a.date) : a[state.key]; const bVal = state.key === 'date' ? new Date(b.date) : b[state.key]; if (aVal < bVal) return state.order === 'asc' ? -1 : 1; if (aVal > bVal) return state.order === 'asc' ? 1 : -1; return 0; }); }
-        function renderAll(data) { renderTable(data); updateSummaryCards(data, masterData.walletValue); updatePieChart(data); renderDailySummary(data); renderCalendar(data); updateSortIndicators(transThead, transSortState); }
+        
+        function renderAll(data) { 
+            renderTable(data); 
+            updateSummaryCards(data, masterData.walletValue, 'main'); 
+            updatePieChart(data, 'main'); 
+            renderDailySummary(data); 
+            renderCalendar(data); 
+            updateSortIndicators(transThead, transSortState); 
+        }
+
+        function renderReadOnlyDashboard() {
+            updateSummaryCards(masterData, masterData.walletValue, 'readonly');
+            updatePieChart(masterData, 'readonly');
+        }
 
         // --- RENDER FUNCTIONS ---
         function renderTable(data) { tableBody.innerHTML = ''; if (data.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500">No matching transactions found.</td></tr>`; tableFoot.innerHTML = ''; return; } data.forEach(item => { const tr = document.createElement('tr'); tr.className = 'hover:bg-slate-700'; const colorClass = item.type === 'income' ? 'text-green-400' : 'text-red-400'; tr.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${item.date || '-'}</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-100">${item.description || '-'}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${item.category || '-'}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right ${colorClass}">${item.amountVND ? formatCurrency(item.amountVND, 'VND') : '-'}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right ${colorClass}">${item.amountIDR ? formatCurrency(item.amountIDR, 'IDR') : '-'}</td><td class="px-2 py-4 whitespace-nowrap text-center text-sm flex justify-center items-center space-x-2"><button class="edit-btn text-slate-500 hover:text-blue-400 p-1" title="Edit" data-item='${encodeURIComponent(JSON.stringify(item))}'><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></button><button class="delete-btn text-slate-500 hover:text-red-400 p-1" title="Delete" data-item='${encodeURIComponent(JSON.stringify(item))}'><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button></td>`; tableBody.appendChild(tr); }); }
         function renderDailySummary(data) { let dailyTotals = data.filter(item => item.type === 'expense').reduce((acc, item) => { const date = item.date; if (!acc[date]) { acc[date] = { date: date, totalVND: 0, totalIDR: 0 }; } acc[date].totalVND += item.amountVND; acc[date].totalIDR += item.amountIDR; return acc; }, {}); let dailyArray = Object.values(dailyTotals); sortData(dailyArray, dailySortState); dailySummaryBody.innerHTML = ''; if (dailyArray.length === 0) { dailySummaryBody.innerHTML = `<tr><td colspan="3" class="px-6 py-12 text-center text-slate-500">No expenses to display.</td></tr>`; return; } dailyArray.forEach(day => { const tr = document.createElement('tr'); tr.className = 'hover:bg-slate-700'; tr.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-100">${day.date}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-400">${formatCurrency(day.totalVND, 'VND')}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-400">${formatCurrency(day.totalIDR, 'IDR')}</td>`; dailySummaryBody.appendChild(tr); }); updateSortIndicators(dailyThead, dailySortState); }
         function renderCalendar(data) { calendarGrid.innerHTML = ''; const year = calendarDate.getFullYear(); const month = calendarDate.getMonth(); calendarHeader.textContent = `${calendarDate.toLocaleString('en-US', { month: 'long' })} ${year}`; const firstDayOfMonth = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate(); const dailyTotals = data.reduce((acc, item) => { const date = item.date; if (!acc[date]) acc[date] = { income: 0, expense: 0, transactions: [] }; if(item.type === 'income') { acc[date].income += item.amountVND; } else { acc[date].expense += item.amountVND; } acc[date].transactions.push(item); return acc; }, {}); for (let i = 0; i < firstDayOfMonth; i++) { calendarGrid.appendChild(document.createElement('div')); } for (let day = 1; day <= daysInMonth; day++) { const dayEl = document.createElement('div'); dayEl.className = 'calendar-day p-2 border border-slate-700 rounded-md flex flex-col items-start'; const dayNumber = document.createElement('span'); dayNumber.textContent = day; dayNumber.className = "text-sm text-slate-400"; dayEl.appendChild(dayNumber); const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`; if (dailyTotals[dateStr]) { dayEl.classList.add('cursor-pointer'); if (dailyTotals[dateStr].income > 0) { const incomeLabel = document.createElement('span'); incomeLabel.className = "mt-1 text-xs bg-green-500/50 text-green-300 rounded px-1"; incomeLabel.textContent = formatCurrency(dailyTotals[dateStr].income, 'VND'); dayEl.appendChild(incomeLabel); } if (dailyTotals[dateStr].expense > 0) { const expenseLabel = document.createElement('span'); expenseLabel.className = "mt-1 text-xs bg-red-500/50 text-red-300 rounded px-1"; expenseLabel.textContent = formatCurrency(dailyTotals[dateStr].expense, 'VND'); dayEl.appendChild(expenseLabel); } dayEl.addEventListener('click', () => showCalendarDetailModal(dateStr, dailyTotals[dateStr].transactions)); } calendarGrid.appendChild(dayEl); } }
-        function updateSummaryCards(data, walletValue) { 
+        
+        function updateSummaryCards(data, walletValue, viewType) { 
             let totalIncomeVND = 0, totalExpenseVND = 0, totalExpenseIDR = 0; 
             const allDates = []; 
             data.forEach(item => { 
                 if(item.date) allDates.push(new Date(item.date)); 
-                if (item.type === 'income') { 
-                    totalIncomeVND += item.amountVND; 
-                } else { 
-                    totalExpenseVND += item.amountVND; totalExpenseIDR += item.amountIDR; 
-                } 
+                if (item.type === 'income') { totalIncomeVND += item.amountVND; } 
+                else { totalExpenseVND += item.amountVND; totalExpenseIDR += item.amountIDR; } 
             }); 
             const finalBalanceVND = totalIncomeVND - totalExpenseVND; 
             const finalBalanceIDR = finalBalanceVND * exchangeRate; 
@@ -387,32 +443,35 @@
             const avgDailyExpense = dayCount > 0 ? totalExpenseVND / dayCount : 0; 
             const topExpenses = data.filter(item => item.type === 'expense').sort((a, b) => b.amountVND - a.amountVND).slice(0, 3); 
             
-            summaryWalletVndEl.textContent = formatCurrency(walletValue, 'VND');
-            walletInput.value = walletValue;
-
-            summaryIncomeEl.textContent = formatCurrency(totalIncomeVND, 'VND'); 
-            summaryExpenseVndEl.textContent = formatCurrency(totalExpenseVND, 'VND'); 
-            summaryBalanceVndEl.textContent = formatCurrency(finalBalanceVND, 'VND'); 
-            summaryBalanceVndEl.className = `text-xl sm:text-2xl font-bold mt-2 ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}`; 
-            summaryBalanceIdrEl.textContent = formatCurrency(finalBalanceIDR, 'IDR'); 
-            summaryBalanceIdrEl.className = `text-xl sm:text-2xl font-bold mt-2 ${finalBalanceIDR >= 0 ? 'text-blue-400' : 'text-red-400'}`; 
-            summaryExpenseIdrEl.textContent = formatCurrency(totalExpenseIDR, 'IDR'); 
-            summaryDaysEl.textContent = dayCount; 
-            summaryRateEl.textContent = exchangeRate.toFixed(4); 
-            summaryAvgDailyExpenseEl.textContent = formatCurrency(avgDailyExpense, 'VND'); 
             let topExpensesHTML = '<ul class="text-left text-sm space-y-1 mt-2">'; 
             if (topExpenses.length > 0) { 
-                topExpenses.forEach(exp => { 
-                    topExpensesHTML += `<li class="truncate flex justify-between"><span>${exp.description}</span> <span class="font-semibold text-red-400">${formatCurrency(exp.amountVND, 'VND')}</span></li>`; 
-                }); 
+                topExpenses.forEach(exp => { topExpensesHTML += `<li class="truncate flex justify-between"><span>${exp.description}</span> <span class="font-semibold text-red-400">${formatCurrency(exp.amountVND, 'VND')}</span></li>`; }); 
             } else { 
                 topExpensesHTML += '<li class="text-center text-slate-400">No expenses found.</li>'; 
             } 
-            topExpensesHTML += '</ul>'; 
-            summaryTopExpensesEl.innerHTML = topExpensesHTML; 
-            tableFoot.innerHTML = `<tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Income (VND)</td><td class="px-6 py-3 text-right text-sm text-green-400">${formatCurrency(totalIncomeVND, 'VND')}</td><td colspan="2"></td></tr><tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Expenses (VND)</td><td class="px-6 py-3 text-right text-sm text-red-400">${formatCurrency(totalExpenseVND, 'VND')}</td><td colspan="2"></td></tr><tr><td colspan="3" class="px-6 py-4 text-right font-bold text-slate-100">FINAL BALANCE (VND)</td><td class="px-6 py-4 text-right font-bold ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}">${formatCurrency(finalBalanceVND, 'VND')}</td><td colspan="2"></td></tr>`; 
+            topExpensesHTML += '</ul>';
+
+            const container = document.getElementById(`summary-cards-container-${viewType}`);
+            container.innerHTML = `
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-cyan-500/50"><h3 class="text-xs sm:text-sm font-medium text-cyan-300 uppercase tracking-wider">Wallet (VND)</h3><p class="text-xl sm:text-2xl font-bold text-cyan-400 mt-2">${formatCurrency(walletValue, 'VND')}</p></div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-green-500/50"><h3 class="text-xs sm:text-sm font-medium text-green-300 uppercase tracking-wider">Income (VND)</h3><p class="text-xl sm:text-2xl font-bold text-green-400 mt-2">${formatCurrency(totalIncomeVND, 'VND')}</p></div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider">Expenses (VND)</h3><p class="text-xl sm:text-2xl font-bold text-red-400 mt-2">${formatCurrency(totalExpenseVND, 'VND')}</p></div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50"><h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Final Balance (VND)</h3><p class="text-xl sm:text-2xl font-bold ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'} mt-2">${formatCurrency(finalBalanceVND, 'VND')}</p></div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50"><h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Final Balance (IDR)</h3><p class="text-xl sm:text-2xl font-bold ${finalBalanceIDR >= 0 ? 'text-blue-400' : 'text-red-400'} mt-2">${formatCurrency(finalBalanceIDR, 'IDR')}</p></div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider">Total Expenses (IDR)</h3><p class="text-xl sm:text-2xl font-bold text-red-400 mt-2">${formatCurrency(totalExpenseIDR, 'IDR')}</p></div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-purple-500/50"><h3 class="text-xs sm:text-sm font-medium text-purple-300 uppercase tracking-wider">Total Days</h3><p class="text-xl sm:text-2xl font-bold text-purple-400 mt-2">${dayCount}</p></div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-yellow-500/50"><h3 class="text-xs sm:text-sm font-medium text-yellow-300 uppercase tracking-wider">Avg. Daily Expense</h3><p class="text-xl sm:text-2xl font-bold text-yellow-400 mt-2">${formatCurrency(avgDailyExpense, 'VND')}</p></div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-amber-500/50"><h3 class="text-xs sm:text-sm font-medium text-amber-300 uppercase tracking-wider">Rate (VND to IDR)</h3><p class="text-xl sm:text-2xl font-bold text-amber-400 mt-2">${exchangeRate.toFixed(4)}</p></div>
+                <div class="md:col-span-3 bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider text-center">Top 3 Expenses (VND)</h3>${topExpensesHTML}</div>
+            `;
+            
+            if (viewType === 'main') {
+                walletInput.value = walletValue;
+                tableFoot.innerHTML = `<tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Income (VND)</td><td class="px-6 py-3 text-right text-sm text-green-400">${formatCurrency(totalIncomeVND, 'VND')}</td><td colspan="2"></td></tr><tr><td colspan="3" class="px-6 py-3 text-right text-sm text-slate-300">Total Expenses (VND)</td><td class="px-6 py-3 text-right text-sm text-red-400">${formatCurrency(totalExpenseVND, 'VND')}</td><td colspan="2"></td></tr><tr><td colspan="3" class="px-6 py-4 text-right font-bold text-slate-100">FINAL BALANCE (VND)</td><td class="px-6 py-4 text-right font-bold ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'}">${formatCurrency(finalBalanceVND, 'VND')}</td><td colspan="2"></td></tr>`;
+            }
         }
-        function updatePieChart(data) {
+        
+        function updatePieChart(data, viewType) {
             const expenseData = data.filter(item => item.type === 'expense');
             const categoryTotals = expenseData.reduce((acc, item) => {
                 acc[item.category] = (acc[item.category] || 0) + item.amountVND;
@@ -423,9 +482,12 @@
             const values = sortedCategories.map(item => item[1]);
             const colors = ['#f87171', '#fb923c', '#facc15', '#a3e635', '#4ade80', '#38bdf8', '#818cf8', '#c084fc', '#f472b6', '#94a3b8'];
             const chartData = { labels: labels, datasets: [{ label: 'Expenses VND', data: values, backgroundColor: colors, borderColor: '#1e293b', hoverOffset: 4 }] };
-            const ctx = document.getElementById('expense-pie-chart').getContext('2d');
-            if (expenseChart) { expenseChart.destroy(); }
-            expenseChart = new Chart(ctx, {
+            const ctx = document.getElementById(`expense-pie-chart-${viewType}`).getContext('2d');
+            
+            let chartInstance = viewType === 'main' ? expenseChartMain : expenseChartReadOnly;
+            if (chartInstance) { chartInstance.destroy(); }
+
+            chartInstance = new Chart(ctx, {
                 type: 'pie',
                 data: chartData,
                 options: {
@@ -433,7 +495,7 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
-                        tooltip: { // MODIFIED: Custom tooltip configuration
+                        tooltip: { 
                             callbacks: {
                                 label: function(context) {
                                     const label = context.label || '';
@@ -448,7 +510,11 @@
                     }
                 }
             });
-            const detailsContainer = document.getElementById('expense-category-details');
+
+            if (viewType === 'main') { expenseChartMain = chartInstance; } 
+            else { expenseChartReadOnly = chartInstance; }
+
+            const detailsContainer = document.getElementById(`expense-category-details-${viewType}`);
             detailsContainer.innerHTML = '';
             if (labels.length === 0) { detailsContainer.innerHTML = '<p class="text-center text-slate-500 text-sm">No expense data to display.</p>'; } else {
                 labels.forEach((label, index) => {
@@ -515,18 +581,13 @@
             const dashboardElement = document.getElementById('view-dashboard');
             
             try {
-                const canvas = await html2canvas(dashboardElement, {
-                    scale: 2,
-                    backgroundColor: '#1e293b'
-                });
-                
+                const canvas = await html2canvas(dashboardElement, { scale: 2, backgroundColor: '#1e293b' });
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL('image/png');
                 link.download = `Hanoi_Finance_Dashboard_${new Date().toISOString().slice(0, 10)}.png`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-
             } catch (error) {
                 console.error('Export failed:', error);
                 showToast('Failed to export image.');
@@ -545,7 +606,9 @@
         function formatCurrency(value, currency) { const number = Number(value); if (isNaN(number)) return '-'; const locale = currency === 'VND' ? 'vi-VN' : 'id-ID'; return new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(number); }
 
         // --- EVENT LISTENERS ---
-        document.addEventListener('DOMContentLoaded', () => { if (sessionStorage.getItem('isAuthenticated') === 'true') { showApp(); } else { pinModal.classList.remove('hidden'); } });
+        document.addEventListener('DOMContentLoaded', () => { 
+            fetchData(); // Fetch data immediately on load for the read-only view
+        });
         pinForm.addEventListener('submit', handlePinSubmit);
         logoutBtn.addEventListener('click', () => { sessionStorage.removeItem('isAuthenticated'); window.location.reload(); });
         addEntryForm.addEventListener('submit', handleFormSubmit);
