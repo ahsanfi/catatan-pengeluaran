@@ -457,7 +457,7 @@
 
             const container = document.getElementById(`summary-cards-container-${viewType}`);
             container.innerHTML = `
-                <div class="bg-slate-700/50 p-4 rounded-lg border border-cyan-500/50"><h3 class="text-xs sm:text-sm font-medium text-cyan-300 uppercase tracking-wider">Wallet (VND)</h3><p class="text-xl sm:text-2xl font-bold text-cyan-400 mt-2">${formatCurrency(walletValue, 'VND')}</p></div>
+                <div class="bg-slate-700/50 p-4 rounded-lg border border-cyan-500/50"><h3 class="text-xs sm:text-sm font-medium text-cyan-300 uppercase tracking-wider">Debt Oleh-Oleh (VND)</h3><p class="text-xl sm:text-2xl font-bold text-cyan-400 mt-2">${formatCurrency(walletValue, 'VND')}</p></div>
                 <div class="bg-slate-700/50 p-4 rounded-lg border border-green-500/50"><h3 class="text-xs sm:text-sm font-medium text-green-300 uppercase tracking-wider">Income (VND)</h3><p class="text-xl sm:text-2xl font-bold text-green-400 mt-2">${formatCurrency(totalIncomeVND, 'VND')}</p></div>
                 <div class="bg-slate-700/50 p-4 rounded-lg border border-red-500/50"><h3 class="text-xs sm:text-sm font-medium text-red-300 uppercase tracking-wider">Expenses (VND)</h3><p class="text-xl sm:text-2xl font-bold text-red-400 mt-2">${formatCurrency(totalExpenseVND, 'VND')}</p></div>
                 <div class="bg-slate-700/50 p-4 rounded-lg border border-blue-500/50"><h3 class="text-xs sm:text-sm font-medium text-blue-300 uppercase tracking-wider">Final Balance (VND)</h3><p class="text-xl sm:text-2xl font-bold ${finalBalanceVND >= 0 ? 'text-blue-400' : 'text-red-400'} mt-2">${formatCurrency(finalBalanceVND, 'VND')}</p></div>
